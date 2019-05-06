@@ -7,16 +7,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "t_address")
 public class Address implements Serializable{
-    
-	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 256)
     private String description;
+    private Long userId;
     
-    @ManyToOne
-    private User user;
+/**********************************************************************/
     
 	public Long getId() {
 		return id;
@@ -29,6 +26,12 @@ public class Address implements Serializable{
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
     
 

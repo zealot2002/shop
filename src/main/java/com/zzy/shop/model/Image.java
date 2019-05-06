@@ -7,12 +7,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "t_image")
 public class Image implements Serializable{
-	private static final long serialVersionUID = 1L;
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 256)
     private String url;
+/**********************************************************************/
+    
 	public Long getId() {
 		return id;
 	}

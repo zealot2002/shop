@@ -8,18 +8,36 @@ import javax.persistence.*;
 @Entity
 @Table(name = "t_shop_info")
 public class ShopInfo implements Serializable{
-	private static final long serialVersionUID = 1L;
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(length = 256)
+	private Long id;
     private String address;
-    
-    @Column(length = 32)
     private String phone;
+/**********************************************************************/
     
-    @OneToMany
-    private Set<Image> imageList;
-    
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 
 }

@@ -1,34 +1,33 @@
 package com.zzy.shop.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "t_user")
 public class User implements Serializable{
-	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 32)
     private String username;
-    @Column(length = 32)
     private String password;
-
+    
     @Column(name = "register_date")
-    private Date registerDate;
-    @Column(length = 16)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdTime;
     private String phone;
-    @Column(length = 256)
     private String avatar;
     
-    @OneToMany
-    private Set<Address> addressList = new HashSet<>();
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+    private List<Order> orders=new ArrayList<>();
 
+    
+/******************************************************************************/
+	
     public Long getId() {
         return id;
     }
@@ -52,20 +51,21 @@ public class User implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    
+    public Date getCreatedTime() {
+		return createdTime;
+	}
 
-    public Date getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(Date registerDate) {
-        this.registerDate = registerDate;
-    }
-
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
+	}
+	
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+	public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -75,5 +75,20 @@ public class User implements Serializable{
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+	
+	//工具方法，不需要映射为数据表的一列
+    @Transient
+    public String getInfo(){
+        return "username:"+username+",phone:"+phone;
     }
 }

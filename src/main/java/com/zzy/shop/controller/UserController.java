@@ -1,4 +1,5 @@
 package com.zzy.shop.controller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,7 +10,6 @@ import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.model.User;
 import com.zzy.shop.service.UserService;
 
-import javax.annotation.Resource;
 import java.util.Optional;
 
 /**
@@ -18,7 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Resource
+	@Autowired
     private UserService service;
 
     @PostMapping("/delete")
