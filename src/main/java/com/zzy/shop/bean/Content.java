@@ -1,5 +1,7 @@
-package com.zzy.shop.model;
+package com.zzy.shop.bean;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -13,9 +15,9 @@ public class Content implements Serializable{
     private String name;
     private String desciption;
 	private Float price;
-	private Category category;
-    private Order order;
-	private Set<Tag> tagList;
+//	private Category category;
+//    private Order order;
+//	private List<Tag> tagList = new ArrayList<>();
 /**********************************************************************/
 	
 	public Long getId() {

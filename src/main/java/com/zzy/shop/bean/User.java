@@ -1,4 +1,4 @@
-package com.zzy.shop.model;
+package com.zzy.shop.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class User implements Serializable{
     private String phone;
     private String avatar;
     
-    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private List<Order> orders=new ArrayList<>();
 
     

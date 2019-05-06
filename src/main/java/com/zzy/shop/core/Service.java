@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface Service<T> {
     void deleteById(Long id);//通过主鍵刪除
     void save(T model);//更新
-    Optional<T> findById(Long id);//通过ID查找
+    void saveAndFlush(T model);//更新
+    T findById(Long id);//通过ID查找
     List<T> findAll();//获取所有
 }

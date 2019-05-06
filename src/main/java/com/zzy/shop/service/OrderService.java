@@ -1,5 +1,5 @@
 package com.zzy.shop.service;
-import com.zzy.shop.bean.User;
+import com.zzy.shop.bean.Order;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.zzy.shop.core.Service;
+import com.zzy.shop.dao.OrderDao;
 import com.zzy.shop.dao.UserDao;
 
 
@@ -16,10 +17,10 @@ import com.zzy.shop.dao.UserDao;
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class UserService implements Service<User> {
+public class OrderService implements Service<Order> {
 
 	@Resource
-    private UserDao dao;
+    private OrderDao dao;
 
 
 	@Override
@@ -28,13 +29,13 @@ public class UserService implements Service<User> {
 	}
 
 	@Override
-	public void save(User model) {
+	public void save(Order model) {
 		dao.save(model);
 	}
 
 	@Override
-	public User findById(Long id) {
-		Optional<User> user = dao.findById(id);
+	public Order findById(Long id) {
+		Optional<Order> user = dao.findById(id);
 		if(user.isPresent()) {
 			return user.get();
 		}
@@ -42,12 +43,12 @@ public class UserService implements Service<User> {
 	}
 
 	@Override
-	public List<User> findAll() {
+	public List<Order> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public void saveAndFlush(User model) {
+	public void saveAndFlush(Order model) {
 		dao.saveAndFlush(model);
 	}
 }

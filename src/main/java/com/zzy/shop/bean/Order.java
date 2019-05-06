@@ -1,4 +1,4 @@
-package com.zzy.shop.model;
+package com.zzy.shop.bean;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -14,8 +14,7 @@ public class Order implements Serializable{
     @Column(name = "create_time")
     private String createTime;
     
-    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},
-			optional=false)//可选属性optional=false,表示user不能为空。删除order，不影响user
+    @ManyToOne()
     @JoinColumn(name="user_id")//设置在order表中的关联字段(外键)
     private User user;
 

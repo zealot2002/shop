@@ -1,4 +1,4 @@
-package com.zzy.shop.model;
+package com.zzy.shop.bean;
 
 import java.io.Serializable;
 import java.util.Set;
