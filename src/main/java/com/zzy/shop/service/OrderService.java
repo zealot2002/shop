@@ -16,39 +16,7 @@ import com.zzy.shop.dao.UserDao;
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
-@Component
-public class OrderService implements Service<Order> {
-
-	@Resource
-    private OrderDao dao;
-
-
-	@Override
-	public void deleteById(Long id) {
-		dao.deleteById(id);
-	}
-
-	@Override
-	public void save(Order model) {
-		dao.save(model);
-	}
-
-	@Override
-	public Order findById(Long id) {
-		Optional<Order> user = dao.findById(id);
-		if(user.isPresent()) {
-			return user.get();
-		}
-		return null;
-	}
-
-	@Override
-	public List<Order> findAll() {
-		return dao.findAll();
-	}
-
-	@Override
-	public void saveAndFlush(Order model) {
-		dao.saveAndFlush(model);
-	}
+public interface OrderService extends Service<Order> {
+	List<Order> findAllByUserId(Long userId);
+	void deleteAllByUserId(Long userId);
 }

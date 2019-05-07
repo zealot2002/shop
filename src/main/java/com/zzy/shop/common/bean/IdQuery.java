@@ -1,4 +1,4 @@
-package com.zzy.shop.common;
+package com.zzy.shop.common.bean;
 
 import java.io.Serializable;
 

@@ -13,4 +13,5 @@ public interface Service<T> {
     void saveAndFlush(T model);//更新
     T findById(Long id);//通过ID查找
     List<T> findAll();//获取所有
+    boolean existsById(Long id);
 }

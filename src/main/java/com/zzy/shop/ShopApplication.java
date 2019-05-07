@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.zzy.shop.dao",
-		"com.zzy.shop.service","com.zzy.shop.controller","com.zzy.shop.config"})
+		"com.zzy.shop.service.impl","com.zzy.shop.controller","com.zzy.shop.config"})
 public class ShopApplication {
 
 	public static void main(String[] args) {

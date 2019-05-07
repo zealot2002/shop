@@ -9,7 +9,8 @@ public class ResultGenerator {
     public static Result genSuccessResult() {
         return new Result()
                 .setCode(ResultCode.SUCCESS)
-                .setMessage(DEFAULT_SUCCESS_MESSAGE);
+                .setMessage(DEFAULT_SUCCESS_MESSAGE)
+                .setData("");
     }
 
     public static Result genSuccessResult(Object data) {

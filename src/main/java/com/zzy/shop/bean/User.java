@@ -4,14 +4,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty.AccessMode;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Entity
 @Table(name = "t_user")
+@ApiModel
 public class User implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +34,8 @@ public class User implements Serializable{
     @ApiModelProperty(value="头像",required=false)
     private String avatar;
     
-//    @OneToMany(mappedBy = "user")
-//    private List<Order> orders=new ArrayList<>();
-
-    
+    @Transient
+    private List<Order> orders=new ArrayList<>();
 /******************************************************************************/
 	
     public Long getId() {
@@ -86,25 +88,33 @@ public class User implements Serializable{
     }
 
     
-//	public List<Order> getOrders() {
-//		return orders;
-//	}
-//
-//	public void setOrders(List<Order> orders) {
-//		this.orders = orders;
-//	}
-	
-	//工具方法，不需要映射为数据表的一列
-    @Transient
-    public String getInfo(){
-        return "username:"+username+",phone:"+phone;
-    }
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", createdTime=" + createdTime
-				+ ", phone=" + phone + ", avatar=" + avatar + "]";
+	public List<Order> getOrders() {
+		return orders;
 	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
+	//其余字段不能修改！
+	public void replace(User model) {
+		this.username = model.username;
+		this.password = model.password;
+		this.phone = model.phone;
+		this.avatar = model.avatar;
+	}
+	
+//	//工具方法，不需要映射为数据表的一列
+//    @Transient
+//    public String getInfo(){
+//        return "username:"+username+",phone:"+phone;
+//    }
+//
+//	@Override
+//	public String toString() {
+//		return "User [id=" + id + ", username=" + username + ", password=" + password + ", createdTime=" + createdTime
+//				+ ", phone=" + phone + ", avatar=" + avatar + "]";
+//	}
     
     
 

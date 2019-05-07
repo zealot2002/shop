@@ -1,10 +1,16 @@
 package com.zzy.shop.bean;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.*;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "t_order")
+@ApiModel
 public class Order implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,11 +18,16 @@ public class Order implements Serializable{
     private String code;
     
     @Column(name = "create_time")
-    private String createTime;
+    private Date createdTime;
     
-    @ManyToOne()
-    @JoinColumn(name="user_id")//设置在order表中的关联字段(外键)
-    private User user;
+    @ApiModelProperty(value="状态",required=true)
+    private Integer state = 0;
+    @ApiModelProperty(value="备注",required=false)
+    private String remarks;
+    
+    @ApiModelProperty(value="用户id",required=true)
+    @Column(name = "user_id")
+    private Long userId;
 
 /**********************************************************************/
 	public Long getId() {
@@ -35,21 +46,42 @@ public class Order implements Serializable{
 		this.code = code;
 	}
 	
+	public Date getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 	
-	public String getCreateTime() {
-		return createTime;
+	public String getRemarks() {
+		return remarks;
 	}
 
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
+
+	public void replace(Order model) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 }
