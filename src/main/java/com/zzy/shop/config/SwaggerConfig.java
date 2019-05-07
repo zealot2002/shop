@@ -34,10 +34,10 @@ public class SwaggerConfig {
  
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("SpringBoot-Swagger2集成和使用-demo示例")
-                .description("oKong | 趔趄的猿")
+                .title("通用电商管理平台Api")
+                .description("zzy | zzy")
                 // 作者信息
-                .contact(new Contact("oKong", "https://blog.lqdev.cn/", "499452441@qq.com"))
+                .contact(new Contact("zzy", "https://blog.lqdev.cn/", "499452441@qq.com"))
                 .version("1.0.0")
                 .build();
     }

@@ -7,23 +7,31 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "t_user")
 public class User implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	
+	@ApiModelProperty(value="用户名",required=true)
     private String username;
+	@ApiModelProperty(value="密码",required=true)
     private String password;
     
     @Column(name = "register_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
+    @ApiModelProperty(value="电话",required=true)
     private String phone;
+    @ApiModelProperty(value="头像",required=false)
     private String avatar;
     
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders=new ArrayList<>();
+//    @OneToMany(mappedBy = "user")
+//    private List<Order> orders=new ArrayList<>();
 
     
 /******************************************************************************/
@@ -78,17 +86,26 @@ public class User implements Serializable{
     }
 
     
-	public List<Order> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(List<Order> orders) {
-		this.orders = orders;
-	}
+//	public List<Order> getOrders() {
+//		return orders;
+//	}
+//
+//	public void setOrders(List<Order> orders) {
+//		this.orders = orders;
+//	}
 	
 	//工具方法，不需要映射为数据表的一列
     @Transient
     public String getInfo(){
         return "username:"+username+",phone:"+phone;
     }
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", createdTime=" + createdTime
+				+ ", phone=" + phone + ", avatar=" + avatar + "]";
+	}
+    
+    
+
 }
