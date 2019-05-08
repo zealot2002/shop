@@ -15,29 +15,30 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Entity
 @Table(name = "t_user")
-@ApiModel
 public class User implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@ApiModelProperty(value="用户名",required=true)
     private String username;
-	@ApiModelProperty(value="密码",required=true)
     private String password;
     
     @Column(name = "register_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
-    @ApiModelProperty(value="电话",required=true)
     private String phone;
-    @ApiModelProperty(value="头像",required=false)
     private String avatar;
     
     @Transient
-    private List<Order> orders=new ArrayList<>();
+    private List<Order> orderList;
+    @Transient
+    private List<Address> addressList;
 /******************************************************************************/
-	
+	public User() {
+		createdTime = new Date();
+		orderList = new ArrayList<>();
+		addressList = new ArrayList<>();
+	}
     public Long getId() {
         return id;
     }
@@ -87,35 +88,15 @@ public class User implements Serializable{
         this.avatar = avatar;
     }
 
-    
-	public List<Order> getOrders() {
-		return orders;
+	public List<Address> getAddressList() {
+		return addressList;
 	}
 
-	public void setOrders(List<Order> orders) {
-		this.orders = orders;
+	public void setAddressList(List<Address> addressList) {
+		this.addressList = addressList;
 	}
 
-	//其余字段不能修改！
-	public void replace(User model) {
-		this.username = model.username;
-		this.password = model.password;
-		this.phone = model.phone;
-		this.avatar = model.avatar;
+	public void setOrderList(List<Order> orderList) {
+		this.orderList = orderList;
 	}
-	
-//	//工具方法，不需要映射为数据表的一列
-//    @Transient
-//    public String getInfo(){
-//        return "username:"+username+",phone:"+phone;
-//    }
-//
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", username=" + username + ", password=" + password + ", createdTime=" + createdTime
-//				+ ", phone=" + phone + ", avatar=" + avatar + "]";
-//	}
-    
-    
-
 }

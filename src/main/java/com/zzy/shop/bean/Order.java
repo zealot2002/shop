@@ -5,12 +5,13 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.zzy.shop.constants.CommonConstants;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "t_order")
-@ApiModel
 public class Order implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,16 +21,20 @@ public class Order implements Serializable{
     @Column(name = "create_time")
     private Date createdTime;
     
-    @ApiModelProperty(value="状态",required=true)
     private Integer state = 0;
-    @ApiModelProperty(value="备注",required=false)
+    
     private String remarks;
     
-    @ApiModelProperty(value="用户id",required=true)
     @Column(name = "user_id")
     private Long userId;
 
 /**********************************************************************/
+    public Order(){
+    	createdTime = new Date();
+    	code = "No."+System.currentTimeMillis();
+    	state = CommonConstants.ORDER_STATE_CREATED;
+    }
+    
 	public Long getId() {
 		return id;
 	}
@@ -77,11 +82,5 @@ public class Order implements Serializable{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-
-	public void replace(Order model) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 }

@@ -1,25 +1,14 @@
-package com.zzy.shop.bean;
+package com.zzy.shop.bean.req;
 
-import java.io.Serializable;
-
-import javax.persistence.*;
-
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@Entity
-@Table(name = "t_address")
-@ApiModel
-public class Address implements Serializable{
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AddressReq{
+	@ApiModelProperty(value="id(update)")
     private Long id;
-    private String description;
-    
-    @ApiModelProperty(value="用户id",required=true)
-    @Column(name = "user_id")
+	@ApiModelProperty(value="用户id(add)")
     private Long userId;
-    
+	@ApiModelProperty(value="描述(add|update)")
+    private String description;
 /**********************************************************************/
     
 	public Long getId() {

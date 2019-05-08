@@ -6,13 +6,14 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "t_shop_info")
-public class ShopInfo implements Serializable{
+@Table(name = "t_shop")
+public class Shop implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
     private String address;
     private String phone;
+    private String description;
 /**********************************************************************/
     
 	public Long getId() {
@@ -37,6 +38,14 @@ public class ShopInfo implements Serializable{
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "t_content")
-public class Content implements Serializable{
+public class Goods implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

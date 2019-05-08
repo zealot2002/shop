@@ -1,15 +1,13 @@
-package com.zzy.shop.bean;
-import java.io.Serializable;
+package com.zzy.shop.bean.req;
 
-import javax.persistence.*;
+import io.swagger.annotations.ApiModelProperty;
 
-@Entity
-@Table(name = "t_category")
-public class Category implements Serializable{
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CategoryReq{
+	@ApiModelProperty(value="id(update)")
 	private Long id;
+	@ApiModelProperty(value="名称(add|update)")
     private String name;
+	@ApiModelProperty(value="icon(add|update)")
 	private Long imageId;
 /**********************************************************************/
 	

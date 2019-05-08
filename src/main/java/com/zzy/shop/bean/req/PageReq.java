@@ -1,11 +1,8 @@
-package com.zzy.shop.common.bean;
+package com.zzy.shop.bean.req;
 
-import java.io.Serializable;
-
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-public class PageQuery implements Serializable{
+public class PageReq{
 	@ApiModelProperty(value="pageNum",required=true)
     private Integer pageNum;
 	@ApiModelProperty(value="pageSize",required=true)
