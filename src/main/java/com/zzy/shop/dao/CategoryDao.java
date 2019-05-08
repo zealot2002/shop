@@ -8,6 +8,8 @@ import com.zzy.shop.bean.Category;
 
 @Repository
 public interface CategoryDao extends JpaRepository<Category, Long>  {
+
+	Category findByName(String name);
 	
 	
 }

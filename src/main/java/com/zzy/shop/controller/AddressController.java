@@ -13,8 +13,10 @@ import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.bean.Address;
 import com.zzy.shop.bean.req.AddressReq;
+import com.zzy.shop.bean.req.CategoryReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.service.AddressService;
 import com.zzy.shop.service.UserService;
 import com.zzy.shop.utils.PageUtil;
@@ -35,13 +37,13 @@ public class AddressController {
 	
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
-    public Result delete(@RequestBody IdReq idQuery) {
+    public Result delete(@RequestBody IdReq idReq) {
 		try {
-			addressService.deleteById(idQuery.getId());
+			addressService.deleteById(idReq.getId());
 			return ResultGenerator.genSuccessResult();
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
-			return ResultGenerator.genFailResult("id为‘"+idQuery.getId()+"’的记录不存在!");
+			return ResultGenerator.genFailResult("id为‘"+idReq.getId()+"’的记录不存在!");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
@@ -52,10 +54,7 @@ public class AddressController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody AddressReq req) {
 		try{
-			boolean isExistUserId = userService.existsById(req.getUserId());
-			if(!isExistUserId) {
-				return ResultGenerator.genFailResult("用户id不存在! userId:"+req.getUserId());
-			}
+			checkValid(req,CommonConstants.ACTION_ADD);
 			Address bean = new Address();
 			bean.setUserId(req.getUserId());
 			bean.setDescription(req.getDescription());
@@ -71,10 +70,8 @@ public class AddressController {
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody AddressReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_UPDATE);
 			Address bean = addressService.findById(req.getId());
-			if(bean == null) {
-				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
-			}
 			bean.setDescription(req.getDescription());
 			addressService.save(bean);
 	        return ResultGenerator.genSuccessResult();
@@ -122,4 +119,13 @@ public class AddressController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	
+	private void checkValid(AddressReq req, int action) throws Exception{
+		if(CommonConstants.ACTION_UPDATE == action) {
+			if(!addressService.existsById(req.getId()))
+				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}
+		if(!userService.existsById(req.getUserId()))
+			throw new Exception("user id不存在! id:"+req.getUserId());
+	}
 }

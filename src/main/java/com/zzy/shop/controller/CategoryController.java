@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
+import com.zzy.shop.core.ServiceException;
 import com.zzy.shop.bean.Category;
 import com.zzy.shop.bean.req.CategoryReq;
+import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.service.CategoryService;
+import com.zzy.shop.service.ImageService;
 import com.zzy.shop.utils.PageUtil;
 
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +33,9 @@ import io.swagger.annotations.ApiOperation;
 public class CategoryController {
 	@Autowired
     private CategoryService categoryService;
+	
+	@Autowired
+    private ImageService imageService;
 	
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
@@ -49,6 +56,7 @@ public class CategoryController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody CategoryReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_ADD);
 			Category bean = new Category();
 			bean.setName(req.getName());
 			bean.setImageId(req.getImageId());
@@ -64,12 +72,11 @@ public class CategoryController {
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody CategoryReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_UPDATE);
 			Category bean = categoryService.findById(req.getId());
-			if(bean == null) {
-				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
-			}
 			bean.setName(req.getName());
 			bean.setImageId(req.getImageId());
+			bean.setInUsed(req.getInUsed());
 			categoryService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -116,4 +123,14 @@ public class CategoryController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	private void checkValid(CategoryReq req, int action) throws Exception{
+		if(CommonConstants.ACTION_UPDATE == action) {
+			if(!categoryService.existsById(req.getId()))
+				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}
+		if(!imageService.existsById(req.getImageId()))
+			throw new Exception("image id不存在! id:"+req.getImageId());
+		if(categoryService.findByName(req.getName())!=null)
+			throw new ServiceException("name 已经存在! name:"+req.getName());
+	}
 }

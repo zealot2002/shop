@@ -4,4 +4,6 @@ import com.zzy.shop.core.Service;
 
 
 public interface ShopService extends Service<Shop> {
+
+	Shop findByName(String name);
 }

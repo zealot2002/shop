@@ -1,11 +1,6 @@
 package com.zzy.shop.bean.req;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.*;
-
 import io.swagger.annotations.ApiModelProperty;
 
 public class GoodsReq{
@@ -19,16 +14,18 @@ public class GoodsReq{
     private String desciption;
 	@ApiModelProperty(value="价格(add|update)")
 	private Float price;
-	
-	@ApiModelProperty(value="id(add|update)")
+	@ApiModelProperty(value="是否有效(update)")
+	private Integer inUsed;
+	@ApiModelProperty(value="imageIdList(add|update)")
     private List<Long> imageIdList;
-	@ApiModelProperty(value="id(add|update)")
+	@ApiModelProperty(value="tagIdList(add|update)")
     private List<Long> tagIdList;
 /**********************************************************************/
 	
     public GoodsReq() {
     	imageIdList = new ArrayList<>();
     	tagIdList = new ArrayList<>();
+    	inUsed = 1;
     }
 	public Long getId() {
 		return id;
@@ -78,6 +75,12 @@ public class GoodsReq{
 	}
 	public void setTagIdList(List<Long> tagIdList) {
 		this.tagIdList = tagIdList;
+	}
+	public Integer getInUsed() {
+		return inUsed;
+	}
+	public void setInUsed(Integer inUsed) {
+		this.inUsed = inUsed;
 	}
 
 	

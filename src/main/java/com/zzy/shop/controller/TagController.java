@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
+import com.zzy.shop.core.ServiceException;
+import com.zzy.shop.bean.Shop;
 import com.zzy.shop.bean.Tag;
 import com.zzy.shop.bean.req.TagReq;
+import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.bean.req.ShopReq;
 import com.zzy.shop.service.TagService;
 import com.zzy.shop.utils.PageUtil;
 
@@ -49,6 +53,7 @@ public class TagController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody TagReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_ADD);
 			Tag bean = new Tag();
 			bean.setName(req.getName());
 			tagService.save(bean);
@@ -63,10 +68,8 @@ public class TagController {
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody TagReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_UPDATE);
 			Tag bean = tagService.findById(req.getId());
-			if(bean == null) {
-				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
-			}
 			bean.setName(req.getName());
 			tagService.save(bean);
 	        return ResultGenerator.genSuccessResult();
@@ -114,4 +117,13 @@ public class TagController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	
+	private void checkValid(TagReq req, int action) throws Exception{
+		if(CommonConstants.ACTION_UPDATE == action) {
+			if(!tagService.existsById(req.getId()))
+				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}
+		if(tagService.findByName(req.getName())!=null)
+			throw new ServiceException("name 已经存在! name:"+req.getName());
+	}
 }

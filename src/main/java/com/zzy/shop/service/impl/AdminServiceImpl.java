@@ -51,4 +51,9 @@ public class AdminServiceImpl implements AdminService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
+
+	@Override
+	public Admin findByUsername(String username) {
+		return dao.findByUsername(username);
+	}
 }

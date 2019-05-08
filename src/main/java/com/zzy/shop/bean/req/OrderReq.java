@@ -1,5 +1,7 @@
 package com.zzy.shop.bean.req;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -13,6 +15,9 @@ public class OrderReq{
     private Integer state = 0;
     @ApiModelProperty(value="备注(add|update)")
     private String remarks;
+    @ApiModelProperty(value="goodsIdList(add|update)")
+    private List<Long> goodsIdList;
+    
 /**********************************************************************/
 	public Long getId() {
 		return id;
@@ -45,4 +50,14 @@ public class OrderReq{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
+
+	public List<Long> getGoodsIdList() {
+		return goodsIdList;
+	}
+
+	public void setGoodsIdList(List<Long> goodsIdList) {
+		this.goodsIdList = goodsIdList;
+	}
+	
+	
 }

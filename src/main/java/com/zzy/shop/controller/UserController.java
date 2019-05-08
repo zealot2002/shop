@@ -1,5 +1,4 @@
 package com.zzy.shop.controller;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import com.zzy.shop.service.UserService;
 import com.zzy.shop.bean.Address;
 import com.zzy.shop.bean.Order;
 import com.zzy.shop.bean.User;
+import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
 import com.zzy.shop.bean.req.UserReq;
@@ -65,6 +65,7 @@ public class UserController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody UserReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_ADD);
 			User bean = new User();
 			bean.setUsername(req.getUsername());
 			bean.setPassword(req.getPassword());
@@ -82,7 +83,7 @@ public class UserController {
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody UserReq req) {
 		try{
-			req.checkValid(userService,CommonConstants.ACTION_UPDATE);
+			checkValid(req,CommonConstants.ACTION_UPDATE);
 			User bean = userService.findById(req.getId());
 			if(bean == null) {
 				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
@@ -154,5 +155,12 @@ public class UserController {
 		List<Address> addressList = addressService.findAllByUserId(user.getId());
 		user.setOrderList(orders);
 		user.setAddressList(addressList);
+	}
+	
+	private void checkValid(UserReq req, int action) throws Exception{
+		if(CommonConstants.ACTION_UPDATE == action) {
+			if(!userService.existsById(req.getId()))
+				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}
 	}
 }

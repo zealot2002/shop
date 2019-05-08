@@ -49,10 +49,4 @@ public class UserReq{
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	public void checkValid(UserService userService, int action) {
-		if(action == CommonConstants.ACTION_UPDATE) {
-			
-		}
-		
-	}
 }

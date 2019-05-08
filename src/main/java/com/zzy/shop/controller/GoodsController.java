@@ -14,11 +14,19 @@ import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.bean.Goods;
 import com.zzy.shop.bean.GoodsImageRel;
+import com.zzy.shop.bean.GoodsTagRel;
+import com.zzy.shop.bean.Image;
+import com.zzy.shop.bean.Tag;
 import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.constants.CommonConstants;
+import com.zzy.shop.service.CategoryService;
 import com.zzy.shop.service.GoodsImageRelService;
 import com.zzy.shop.service.GoodsService;
+import com.zzy.shop.service.GoodsTagRelService;
+import com.zzy.shop.service.ImageService;
+import com.zzy.shop.service.TagService;
 import com.zzy.shop.utils.PageUtil;
 
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +41,15 @@ public class GoodsController {
 	@Autowired
     private GoodsService goodsService;
 	@Autowired
+    private CategoryService categoryService;
+	@Autowired
     private GoodsImageRelService goodsImageRelService;
+	@Autowired
+    private GoodsTagRelService goodsTagRelService;
+	@Autowired
+    private ImageService imageService;
+	@Autowired
+    private TagService tagService;
 	
 /********************************************************************************************/
 	@Transactional
@@ -41,6 +57,8 @@ public class GoodsController {
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result delete(@RequestBody IdReq idQuery) {
 		try {
+			goodsImageRelService.deleteByGoodsId(idQuery.getId());
+			goodsTagRelService.deleteByGoodsId(idQuery.getId());
 			goodsService.deleteById(idQuery.getId());
 			return ResultGenerator.genSuccessResult();
 		}catch(EmptyResultDataAccessException e1) {
@@ -56,6 +74,7 @@ public class GoodsController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody GoodsReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_ADD);
 			Goods bean = new Goods();
 			bean.setName(req.getName());
 			bean.setDesciption(req.getDesciption());
@@ -63,48 +82,63 @@ public class GoodsController {
 			bean = goodsService.saveAndFlush(bean);
 			
 			/*handle imageList*/
-			for(Long id:req.getImageIdList()) {
-				GoodsImageRel rel = new GoodsImageRel();
-				rel.setGoodsId(bean.getId());
-				rel.setImageId(id);
-				goodsImageRelService.save(rel);
+			if(req.getImageIdList()!=null) {
+				for(Long id:req.getImageIdList()) {
+					GoodsImageRel rel = new GoodsImageRel();
+					rel.setGoodsId(bean.getId());
+					rel.setImageId(id);
+					goodsImageRelService.save(rel);
+				}
 			}
 			/*handle tagList*/
-//			for(Long id:req.getImageIdList()) {
-//				GoodsImageRel rel = new GoodsImageRel();
-//				rel.setGoodsId(bean.getId());
-//				rel.setImageId(id);
-//				goodsImageRelService.save(rel);
-//			}
+			if(req.getTagIdList()!=null) {
+				for(Long id:req.getTagIdList()) {
+					GoodsTagRel rel = new GoodsTagRel();
+					rel.setGoodsId(bean.getId());
+					rel.setTagId(id);
+					goodsTagRelService.save(rel);
+				}
+			}
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
-
+	
+	@Transactional
 	@ApiOperation(value="修改", notes="修改")
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody GoodsReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_UPDATE);
 			Goods bean = goodsService.findById(req.getId());
-			if(bean == null) {
-				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
-			}
 			bean.setName(req.getName());
 			bean.setDesciption(req.getDesciption());
 			bean.setPrice(req.getPrice());
+			bean.setInUsed(req.getInUsed());
 			goodsService.save(bean);
 			
-			/*handle imageList*/
-			goodsImageRelService.deleteByGoodsId(bean.getId());
-			for(Long id:req.getImageIdList()) {
-				GoodsImageRel rel = new GoodsImageRel();
-				rel.setGoodsId(bean.getId());
-				rel.setImageId(id);
-				goodsImageRelService.save(rel);
+			if(req.getImageIdList()!=null) {
+				/*handle imageList*/
+				goodsImageRelService.deleteByGoodsId(bean.getId());
+				for(Long id:req.getImageIdList()) {
+					GoodsImageRel rel = new GoodsImageRel();
+					rel.setGoodsId(bean.getId());
+					rel.setImageId(id);
+					goodsImageRelService.save(rel);
+				}
 			}
-			
+			/*handle tagList*/
+			if(req.getTagIdList()!=null) {
+				goodsTagRelService.deleteByGoodsId(bean.getId());
+				for(Long id:req.getImageIdList()) {
+					GoodsTagRel rel = new GoodsTagRel();
+					rel.setGoodsId(bean.getId());
+					rel.setTagId(id);
+					goodsTagRelService.save(rel);
+				}
+			}
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -117,6 +151,11 @@ public class GoodsController {
     public Result queryById(@RequestBody IdReq idReq) {
 		try {
 			Goods bean = goodsService.findById(idReq.getId());
+			List<Image> imageList = imageService.findByGoodsId(idReq.getId());
+			bean.setImageList(imageList);
+			List<Tag> tagList = tagService.findByGoodsId(idReq.getId());
+			bean.setTagList(tagList);
+			
 			return ResultGenerator.genSuccessResult(bean);
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
@@ -133,6 +172,12 @@ public class GoodsController {
 			List<Goods> list = goodsService.findAll();
 			List<Goods> targetList = new PageUtil<Goods>().getList(list,
 					pageReq.getPageNum(),pageReq.getPageSize());
+			for(Goods bean:targetList) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				bean.setImageList(imageList);
+				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
+				bean.setTagList(tagList);
+			}
 			return ResultGenerator.genSuccessResult(targetList);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -144,10 +189,34 @@ public class GoodsController {
     public Result queryAll() {
 		try {
 			List<Goods> list = goodsService.findAll();
+			for(Goods bean:list) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				bean.setImageList(imageList);
+				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
+				bean.setTagList(tagList);
+			}
 			return ResultGenerator.genSuccessResult(list);
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	
+	private void checkValid(GoodsReq req, int action) throws Exception{
+		if(CommonConstants.ACTION_UPDATE == action) {
+			if(!goodsService.existsById(req.getId()))
+				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}
+		if(!categoryService.existsById(req.getCategoryId()))
+			throw new Exception("类别id不存在! id:"+req.getCategoryId());
+		
+		for(Long id:req.getImageIdList()) {
+			if(!imageService.existsById(id))
+				throw new Exception("image id不存在! id:"+id);
+		}
+		for(Long id:req.getTagIdList()) {
+			if(!tagService.existsById(id))
+				throw new Exception("tag id不存在! id:"+id);
+		}
+	}
 }

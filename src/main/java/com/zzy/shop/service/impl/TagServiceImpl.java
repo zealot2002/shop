@@ -52,4 +52,14 @@ public class TagServiceImpl implements TagService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
+
+	@Override
+	public List<Tag> findByGoodsId(Long goodsId) {
+		return dao.findByGoodsId(goodsId);
+	}
+
+	@Override
+	public Tag findByName(String name) {
+		return dao.findByName(name);
+	}
 }

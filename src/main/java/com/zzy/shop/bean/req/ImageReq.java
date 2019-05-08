@@ -7,6 +7,8 @@ public class ImageReq{
 	private Long id;
 	@ApiModelProperty(value="url(add|update)")
     private String url;
+	@ApiModelProperty(value="是否有效(update)")
+	private Integer inUsed;
 /**********************************************************************/
 	
 	public Long getId() {
@@ -20,6 +22,12 @@ public class ImageReq{
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public Integer getInUsed() {
+		return inUsed;
+	}
+	public void setInUsed(Integer inUsed) {
+		this.inUsed = inUsed;
 	}
 
 }

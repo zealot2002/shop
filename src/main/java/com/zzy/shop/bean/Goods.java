@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "t_content")
+@Table(name = "t_goods")
 public class Goods implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,6 +11,7 @@ public class Shop implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private String name;
     private String address;
     private String phone;
     private String description;
@@ -46,6 +47,14 @@ public class Shop implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 

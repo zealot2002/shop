@@ -1,5 +1,7 @@
 package com.zzy.shop.core;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * 响应结果生成工具
  */
@@ -10,7 +12,7 @@ public class ResultGenerator {
         return new Result()
                 .setCode(ResultCode.SUCCESS)
                 .setMessage(DEFAULT_SUCCESS_MESSAGE)
-                .setData("");
+                .setData(new JSONObject());
     }
 
     public static Result genSuccessResult(Object data) {

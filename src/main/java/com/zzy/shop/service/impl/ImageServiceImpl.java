@@ -52,4 +52,9 @@ public class ImageServiceImpl implements ImageService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
+
+	@Override
+	public List<Image> findByGoodsId(Long goodsId) {
+		return dao.findByGoodsId(goodsId);
+	}
 }

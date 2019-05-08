@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
+import com.zzy.shop.core.ServiceException;
 import com.zzy.shop.bean.Admin;
+import com.zzy.shop.bean.req.AddressReq;
 import com.zzy.shop.bean.req.AdminReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.service.AdminService;
 import com.zzy.shop.utils.PageUtil;
 
@@ -28,13 +31,13 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/Admin")
 public class AdminController {
 	@Autowired
-    private AdminService AdminService;
+    private AdminService adminService;
 	
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result delete(@RequestBody IdReq idQuery) {
 		try {
-			AdminService.deleteById(idQuery.getId());
+			adminService.deleteById(idQuery.getId());
 			return ResultGenerator.genSuccessResult();
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
@@ -49,10 +52,11 @@ public class AdminController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody AdminReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_ADD);
 			Admin bean = new Admin();
 			bean.setUsername(req.getUsername());
 			bean.setPassword(req.getPassword());
-			AdminService.save(bean);
+			adminService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -64,13 +68,14 @@ public class AdminController {
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody AdminReq req) {
 		try{
-			Admin bean = AdminService.findById(req.getId());
+			checkValid(req,CommonConstants.ACTION_UPDATE);
+			Admin bean = adminService.findById(req.getId());
 			if(bean == null) {
 				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
 			}
 			bean.setUsername(req.getUsername());
 			bean.setPassword(req.getPassword());
-			AdminService.save(bean);
+			adminService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -82,7 +87,7 @@ public class AdminController {
 	@PostMapping(path = "/queryById",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result queryById(@RequestBody IdReq idReq) {
 		try {
-			Admin bean = AdminService.findById(idReq.getId());
+			Admin bean = adminService.findById(idReq.getId());
 			return ResultGenerator.genSuccessResult(bean);
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
@@ -96,7 +101,7 @@ public class AdminController {
 	@PostMapping(path = "/queryPage",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result queryPage(@RequestBody PageReq pageReq) {
 		try {
-			List<Admin> list = AdminService.findAll();
+			List<Admin> list = adminService.findAll();
 			List<Admin> targetList = new PageUtil<Admin>().getList(list,
 					pageReq.getPageNum(),pageReq.getPageSize());
 			return ResultGenerator.genSuccessResult(targetList);
@@ -109,11 +114,16 @@ public class AdminController {
 	@PostMapping(path = "/queryAll",consumes= MediaType.ALL_VALUE)
     public Result queryAll() {
 		try {
-			List<Admin> list = AdminService.findAll();
+			List<Admin> list = adminService.findAll();
 			return ResultGenerator.genSuccessResult(list);
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	private void checkValid(AdminReq req, int action) throws Exception{
+		Admin admin = adminService.findByUsername(req.getUsername());
+		if(admin!=null)
+			throw new ServiceException("username 已经存在! username:"+req.getUsername());
+	}
 }

@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.bean.Order;
+import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.OrderReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.constants.CommonConstants;
+import com.zzy.shop.service.GoodsService;
 import com.zzy.shop.service.OrderService;
 import com.zzy.shop.service.UserService;
 import com.zzy.shop.utils.PageUtil;
@@ -30,6 +33,8 @@ import io.swagger.annotations.ApiOperation;
 public class OrderController {
 	@Autowired
     private OrderService orderService;
+	@Autowired
+    private GoodsService goodsService;
 	@Autowired
     private UserService userService;
 	
@@ -52,10 +57,7 @@ public class OrderController {
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody OrderReq req) {
 		try{
-			boolean isExistUserId = userService.existsById(req.getUserId());
-			if(!isExistUserId) {
-				return ResultGenerator.genFailResult("用户id不存在! userId:"+req.getUserId());
-			}
+			checkValid(req,CommonConstants.ACTION_ADD);
 			Order bean = new Order();
 			bean.setRemarks(req.getRemarks());
 			bean.setUserId(req.getUserId());
@@ -71,10 +73,8 @@ public class OrderController {
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody OrderReq req) {
 		try{
+			checkValid(req,CommonConstants.ACTION_UPDATE);
 			Order bean = orderService.findById(req.getId());
-			if(bean == null) {
-				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
-			}
 			bean.setState(req.getState());
 			bean.setRemarks(req.getRemarks());
 			orderService.save(bean);
@@ -123,4 +123,18 @@ public class OrderController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	
+	private void checkValid(OrderReq req, int action) throws Exception{
+		if(CommonConstants.ACTION_UPDATE == action) {
+			if(!orderService.existsById(req.getId()))
+				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}
+		if(!userService.existsById(req.getUserId()))
+			throw new Exception("user id不存在! id:"+req.getUserId());
+		
+		for(Long id:req.getGoodsIdList()) {
+			if(!goodsService.existsById(id))
+				throw new Exception("goods id不存在! id:"+id);
+		}
+	}
 }

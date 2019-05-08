@@ -4,4 +4,6 @@ import com.zzy.shop.core.Service;
 
 
 public interface CategoryService extends Service<Category> {
+
+	Category findByName(String name);
 }

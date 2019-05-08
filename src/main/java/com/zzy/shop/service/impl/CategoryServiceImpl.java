@@ -51,4 +51,9 @@ public class CategoryServiceImpl implements CategoryService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
+
+	@Override
+	public Category findByName(String name) {
+		return dao.findByName(name);
+	}
 }

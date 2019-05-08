@@ -1,22 +1,21 @@
 package com.zzy.shop.service.impl;
-import com.zzy.shop.bean.Shop;
+import com.zzy.shop.bean.GoodsTagRel;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
-import com.zzy.shop.dao.ShopDao;
-import com.zzy.shop.service.ShopService;
+import com.zzy.shop.dao.GoodsTagRelDao;
+import com.zzy.shop.service.GoodsTagRelService;
 
 
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class ShopServiceImpl implements ShopService {
+public class GoodsTagRelServiceImpl implements GoodsTagRelService {
 
 	@Resource
-    private ShopDao dao;
-
+    private GoodsTagRelDao dao;
 
 	@Override
 	public void deleteById(Long id) {
@@ -24,13 +23,13 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public Shop save(Shop model) {
+	public GoodsTagRel save(GoodsTagRel model) {
 		return dao.save(model);
 	}
 
 	@Override
-	public Shop findById(Long id) {
-		Optional<Shop> bean = dao.findById(id);
+	public GoodsTagRel findById(Long id) {
+		Optional<GoodsTagRel> bean = dao.findById(id);
 		if(bean.isPresent()) {
 			return bean.get();
 		}
@@ -38,12 +37,12 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public List<Shop> findAll() {
+	public List<GoodsTagRel> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public Shop saveAndFlush(Shop model) {
+	public GoodsTagRel saveAndFlush(GoodsTagRel model) {
 		return dao.saveAndFlush(model);
 	}
 
@@ -53,7 +52,8 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public Shop findByName(String name) {
-		return dao.findByName(name);
+	public void deleteByGoodsId(Long goodsId) {
+		dao.deleteByGoodsId(goodsId);
+		
 	}
 }

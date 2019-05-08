@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 public class ShopReq{
 	@ApiModelProperty(value="id(update)")
 	private Long id;
+	@ApiModelProperty(value="名称(add|update)")
+    private String name;
 	@ApiModelProperty(value="地址(add|update)")
     private String address;
 	@ApiModelProperty(value="电话(add|update)")
@@ -45,6 +47,14 @@ public class ShopReq{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 

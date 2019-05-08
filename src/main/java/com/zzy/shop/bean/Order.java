@@ -2,6 +2,7 @@ package com.zzy.shop.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -27,6 +28,9 @@ public class Order implements Serializable{
     
     @Column(name = "user_id")
     private Long userId;
+    
+    @Transient
+    private List<Goods> goodsList;
 
 /**********************************************************************/
     public Order(){
@@ -82,5 +86,15 @@ public class Order implements Serializable{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
+
+	public List<Goods> getGoodsList() {
+		return goodsList;
+	}
+
+	public void setGoodsList(List<Goods> goodsList) {
+		this.goodsList = goodsList;
+	}
+	
+	
 	
 }

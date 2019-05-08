@@ -68,6 +68,7 @@ public class ImageController {
 				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
 			}
 			bean.setUrl(req.getUrl());
+			bean.setInUsed(req.getInUsed());
 			ImageService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {

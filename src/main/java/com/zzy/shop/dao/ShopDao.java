@@ -7,6 +7,8 @@ import com.zzy.shop.bean.Shop;
 
 @Repository
 public interface ShopDao extends JpaRepository<Shop, Long>  {
+
+	Shop findByName(String name);
 	
 	
 }

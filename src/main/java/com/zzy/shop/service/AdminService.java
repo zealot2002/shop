@@ -4,4 +4,6 @@ import com.zzy.shop.core.Service;
 
 
 public interface AdminService extends Service<Admin> {
+
+	Admin findByUsername(String username);
 }
