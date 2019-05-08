@@ -10,9 +10,14 @@ public class Tag implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
     private String name;
+    @Column(name = "in_used")
+    private Integer inUsed;
 	
 /**********************************************************************/
 	
+    public Tag() {
+    	inUsed = 1;
+    }
 	public Long getId() {
 		return id;
 	}
@@ -25,4 +30,12 @@ public class Tag implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+	public Integer getInUsed() {
+		return inUsed;
+	}
+	public void setInUsed(Integer inUsed) {
+		this.inUsed = inUsed;
+	}
+	
+	
 }

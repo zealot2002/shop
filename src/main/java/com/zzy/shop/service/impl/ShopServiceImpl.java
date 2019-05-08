@@ -24,8 +24,8 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public void save(Shop model) {
-		dao.save(model);
+	public Shop save(Shop model) {
+		return dao.save(model);
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public void saveAndFlush(Shop model) {
-		dao.saveAndFlush(model);
+	public Shop saveAndFlush(Shop model) {
+		return dao.saveAndFlush(model);
 	}
 
 	@Override

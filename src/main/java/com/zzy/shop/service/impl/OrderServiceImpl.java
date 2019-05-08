@@ -30,8 +30,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void save(Order model) {
-		dao.save(model);
+	public Order save(Order model) {
+		return dao.save(model);
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void saveAndFlush(Order model) {
-		dao.saveAndFlush(model);
+	public Order saveAndFlush(Order model) {
+		return dao.saveAndFlush(model);
 	}
 
 	@Override

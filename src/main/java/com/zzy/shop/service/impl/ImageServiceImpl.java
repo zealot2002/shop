@@ -1,25 +1,22 @@
 package com.zzy.shop.service.impl;
-import com.zzy.shop.bean.User;
+import com.zzy.shop.bean.Image;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Component;
-
-import com.zzy.shop.dao.UserDao;
-import com.zzy.shop.service.UserService;
+import com.zzy.shop.dao.ImageDao;
+import com.zzy.shop.service.ImageService;
 
 
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class UserServiceImpl implements UserService {
+public class ImageServiceImpl implements ImageService {
 
 	@Resource
-    private UserDao dao;
+    private ImageDao dao;
 
 
 	@Override
@@ -28,26 +25,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User save(User model) {
+	public Image save(Image model) {
 		return dao.save(model);
 	}
 
 	@Override
-	public User findById(Long id) {
-		Optional<User> user = dao.findById(id);
-		if(user.isPresent()) {
-			return user.get();
+	public Image findById(Long id) {
+		Optional<Image> bean = dao.findById(id);
+		if(bean.isPresent()) {
+			return bean.get();
 		}
 		return null;
 	}
 
 	@Override
-	public List<User> findAll() {
+	public List<Image> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public User saveAndFlush(User model) {
+	public Image saveAndFlush(Image model) {
 		return dao.saveAndFlush(model);
 	}
 
@@ -55,5 +52,4 @@ public class UserServiceImpl implements UserService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
-
 }

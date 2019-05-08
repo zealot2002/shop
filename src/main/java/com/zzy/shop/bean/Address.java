@@ -9,14 +9,12 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "t_address")
-@ApiModel
 public class Address implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     
-    @ApiModelProperty(value="用户id",required=true)
     @Column(name = "user_id")
     private Long userId;
     

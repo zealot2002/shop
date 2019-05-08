@@ -33,8 +33,8 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	public void save(Address model) {
-		dao.save(model);
+	public Address save(Address model) {
+		return dao.save(model);
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	public void saveAndFlush(Address model) {
-		dao.saveAndFlush(model);
+	public Address saveAndFlush(Address model) {
+		return dao.saveAndFlush(model);
 	}
 
 	@Override

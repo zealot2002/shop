@@ -1,4 +1,4 @@
-package com.zzy.shop.bean;
+package com.zzy.shop.bean.req;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,31 +6,29 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "t_content")
-public class Goods implements Serializable{
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+import io.swagger.annotations.ApiModelProperty;
+
+public class GoodsReq{
+	@ApiModelProperty(value="id(update)")
 	private Long id;
-	@Column(name = "category_id")
+	@ApiModelProperty(value="类别id(add|update)")
 	private Long categoryId;
+	@ApiModelProperty(value="名称(add|update)")
     private String name;
+	@ApiModelProperty(value="描述(add|update)")
     private String desciption;
+	@ApiModelProperty(value="价格(add|update)")
 	private Float price;
-	@Column(name = "in_used")
-	private Integer inUsed;
-	@Transient
-    private List<Image> imageList;
-    @Transient
-    private List<Tag> tagList;
-//    private Order order;
-//	private List<Tag> tagList = new ArrayList<>();
+	
+	@ApiModelProperty(value="id(add|update)")
+    private List<Long> imageIdList;
+	@ApiModelProperty(value="id(add|update)")
+    private List<Long> tagIdList;
 /**********************************************************************/
 	
-    public Goods() {
-    	imageList = new ArrayList<>();
-    	tagList = new ArrayList<>();
-    	inUsed = 1;
+    public GoodsReq() {
+    	imageIdList = new ArrayList<>();
+    	tagIdList = new ArrayList<>();
     }
 	public Long getId() {
 		return id;
@@ -69,23 +67,17 @@ public class Goods implements Serializable{
 	public void setCategoryId(Long categoryId) {
 		this.categoryId = categoryId;
 	}
-	public Integer getInUsed() {
-		return inUsed;
+	public List<Long> getImageIdList() {
+		return imageIdList;
 	}
-	public void setInUsed(Integer inUsed) {
-		this.inUsed = inUsed;
+	public void setImageIdList(List<Long> imageIdList) {
+		this.imageIdList = imageIdList;
 	}
-	public List<Image> getImageList() {
-		return imageList;
+	public List<Long> getTagIdList() {
+		return tagIdList;
 	}
-	public void setImageList(List<Image> imageList) {
-		this.imageList = imageList;
-	}
-	public List<Tag> getTagList() {
-		return tagList;
-	}
-	public void setTagList(List<Tag> tagList) {
-		this.tagList = tagList;
+	public void setTagIdList(List<Long> tagIdList) {
+		this.tagIdList = tagIdList;
 	}
 
 	

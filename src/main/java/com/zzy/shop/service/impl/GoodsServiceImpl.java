@@ -1,36 +1,41 @@
 package com.zzy.shop.service.impl;
-import com.zzy.shop.bean.Category;
+import com.zzy.shop.bean.Goods;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
-import com.zzy.shop.dao.CategoryDao;
-import com.zzy.shop.service.CategoryService;
+import com.zzy.shop.dao.GoodsDao;
+import com.zzy.shop.service.GoodsService;
 
 
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class CategoryServiceImpl implements CategoryService {
+public class GoodsServiceImpl implements GoodsService {
 
 	@Resource
-    private CategoryDao dao;
+    private GoodsDao dao;
 
 
+	/*假删除*/
 	@Override
 	public void deleteById(Long id) {
-		dao.deleteById(id);
+		Optional<Goods> bean = dao.findById(id);
+		if(bean.isPresent()) {
+			bean.get().setInUsed(0);
+			dao.save(bean.get());
+		}
 	}
 
 	@Override
-	public Category save(Category model) {
+	public Goods save(Goods model) {
 		return dao.save(model);
 	}
 
 	@Override
-	public Category findById(Long id) {
-		Optional<Category> bean = dao.findById(id);
+	public Goods findById(Long id) {
+		Optional<Goods> bean = dao.findById(id);
 		if(bean.isPresent()) {
 			return bean.get();
 		}
@@ -38,12 +43,12 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> findAll() {
+	public List<Goods> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public Category saveAndFlush(Category model) {
+	public Goods saveAndFlush(Goods model) {
 		return dao.saveAndFlush(model);
 	}
 
@@ -51,4 +56,5 @@ public class CategoryServiceImpl implements CategoryService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
+	
 }

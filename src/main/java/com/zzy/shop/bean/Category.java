@@ -10,8 +10,14 @@ public class Category implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
     private String name;
+    @Column(name = "image_id")
 	private Long imageId;
+    @Column(name = "in_used")
+	private Integer inUsed;
 /**********************************************************************/
+	public Category() {
+		inUsed = 1;
+	}
 	
 	public Long getId() {
 		return id;
@@ -31,4 +37,14 @@ public class Category implements Serializable{
 	public void setImageId(Long imageId) {
 		this.imageId = imageId;
 	}
+
+	public Integer getInUsed() {
+		return inUsed;
+	}
+
+	public void setInUsed(Integer inUsed) {
+		this.inUsed = inUsed;
+	}
+	
+	
 }

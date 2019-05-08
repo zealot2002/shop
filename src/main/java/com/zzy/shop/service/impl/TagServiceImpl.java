@@ -1,25 +1,22 @@
 package com.zzy.shop.service.impl;
-import com.zzy.shop.bean.User;
+import com.zzy.shop.bean.Tag;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Component;
-
-import com.zzy.shop.dao.UserDao;
-import com.zzy.shop.service.UserService;
+import com.zzy.shop.dao.TagDao;
+import com.zzy.shop.service.TagService;
 
 
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class UserServiceImpl implements UserService {
+public class TagServiceImpl implements TagService {
 
 	@Resource
-    private UserDao dao;
+    private TagDao dao;
 
 
 	@Override
@@ -28,26 +25,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User save(User model) {
+	public Tag save(Tag model) {
 		return dao.save(model);
 	}
 
 	@Override
-	public User findById(Long id) {
-		Optional<User> user = dao.findById(id);
-		if(user.isPresent()) {
-			return user.get();
+	public Tag findById(Long id) {
+		Optional<Tag> bean = dao.findById(id);
+		if(bean.isPresent()) {
+			return bean.get();
 		}
 		return null;
 	}
 
 	@Override
-	public List<User> findAll() {
+	public List<Tag> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public User saveAndFlush(User model) {
+	public Tag saveAndFlush(Tag model) {
 		return dao.saveAndFlush(model);
 	}
 
@@ -55,5 +52,4 @@ public class UserServiceImpl implements UserService {
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
 	}
-
 }

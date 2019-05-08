@@ -1,22 +1,21 @@
 package com.zzy.shop.service.impl;
-import com.zzy.shop.bean.Category;
+import com.zzy.shop.bean.GoodsImageRel;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
-import com.zzy.shop.dao.CategoryDao;
-import com.zzy.shop.service.CategoryService;
+import com.zzy.shop.dao.GoodsImageRelDao;
+import com.zzy.shop.service.GoodsImageRelService;
 
 
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class CategoryServiceImpl implements CategoryService {
+public class GoodsImageRelServiceImpl implements GoodsImageRelService {
 
 	@Resource
-    private CategoryDao dao;
-
+    private GoodsImageRelDao dao;
 
 	@Override
 	public void deleteById(Long id) {
@@ -24,13 +23,13 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category save(Category model) {
+	public GoodsImageRel save(GoodsImageRel model) {
 		return dao.save(model);
 	}
 
 	@Override
-	public Category findById(Long id) {
-		Optional<Category> bean = dao.findById(id);
+	public GoodsImageRel findById(Long id) {
+		Optional<GoodsImageRel> bean = dao.findById(id);
 		if(bean.isPresent()) {
 			return bean.get();
 		}
@@ -38,17 +37,23 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> findAll() {
+	public List<GoodsImageRel> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public Category saveAndFlush(Category model) {
+	public GoodsImageRel saveAndFlush(GoodsImageRel model) {
 		return dao.saveAndFlush(model);
 	}
 
 	@Override
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
+	}
+
+	@Override
+	public void deleteByGoodsId(Long goodsId) {
+		dao.deleteByGoodsId(goodsId);
+		
 	}
 }
