@@ -1,6 +1,7 @@
 package com.zzy.shop.bean;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -15,6 +16,9 @@ public class Shop implements Serializable{
     private String address;
     private String phone;
     private String description;
+    
+    @Transient
+    private List<String> imageUrlList;
 /**********************************************************************/
     
 	public Long getId() {
@@ -57,5 +61,12 @@ public class Shop implements Serializable{
 		this.name = name;
 	}
 
+	public List<String> getImageUrlList() {
+		return imageUrlList;
+	}
+
+	public void setImageUrlList(List<String> imageUrlList) {
+		this.imageUrlList = imageUrlList;
+	}
 
 }

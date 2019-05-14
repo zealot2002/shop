@@ -1,4 +1,5 @@
 package com.zzy.shop.controller;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,20 @@ import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.core.ServiceException;
 import com.zzy.shop.bean.Address;
 import com.zzy.shop.bean.Admin;
+import com.zzy.shop.bean.Goods;
+import com.zzy.shop.bean.GoodsImageRel;
+import com.zzy.shop.bean.Image;
 import com.zzy.shop.bean.Shop;
+import com.zzy.shop.bean.ShopImageRel;
+import com.zzy.shop.bean.Tag;
 import com.zzy.shop.bean.req.AddressReq;
 import com.zzy.shop.bean.req.AdminReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
 import com.zzy.shop.bean.req.ShopReq;
 import com.zzy.shop.constants.CommonConstants;
+import com.zzy.shop.service.ImageService;
+import com.zzy.shop.service.ShopImageRelService;
 import com.zzy.shop.service.ShopService;
 import com.zzy.shop.service.UserService;
 import com.zzy.shop.utils.PageUtil;
@@ -36,16 +44,22 @@ import io.swagger.annotations.ApiOperation;
 public class ShopController {
 	@Autowired
     private ShopService shopService;
+	@Autowired
+    private ImageService imageService;
+	@Autowired
+    private ShopImageRelService shopImageRelService;
 	
+/******************************************************************************/
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
-    public Result delete(@RequestBody IdReq idQuery) {
+    public Result delete(@RequestBody IdReq idReq) {
 		try {
-			shopService.deleteById(idQuery.getId());
+//			shopImageRelService.deleteByShopId(idReq.getId());
+			shopService.deleteById(idReq.getId());
 			return ResultGenerator.genSuccessResult();
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
-			return ResultGenerator.genFailResult("id为‘"+idQuery.getId()+"’的记录不存在!");
+			return ResultGenerator.genFailResult("id为‘"+idReq.getId()+"’的记录不存在!");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
@@ -58,9 +72,20 @@ public class ShopController {
 		try{
 			checkValid(req,CommonConstants.ACTION_ADD);
 			Shop bean = new Shop();
+			bean.setName(req.getName());
 			bean.setAddress(req.getAddress());
 			bean.setDescription(req.getDescription());
 			bean.setPhone(req.getPhone());
+			
+			/*handle imageList*/
+			if(req.getImageIdList()!=null) {
+				for(Long id:req.getImageIdList()) {
+					ShopImageRel rel = new ShopImageRel();
+					rel.setShopId(bean.getId());
+					rel.setImageId(id);
+					shopImageRelService.save(rel);
+				}
+			}
 			shopService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -78,6 +103,16 @@ public class ShopController {
 			bean.setAddress(req.getAddress());
 			bean.setDescription(req.getDescription());
 			bean.setPhone(req.getPhone());
+			if(req.getImageIdList()!=null) {
+				/*handle imageList*/
+				shopImageRelService.deleteByShopId(bean.getId());
+				for(Long id:req.getImageIdList()) {
+					ShopImageRel rel = new ShopImageRel();
+					rel.setShopId(bean.getId());
+					rel.setImageId(id);
+					shopImageRelService.save(rel);
+				}
+			}
 			shopService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -91,6 +126,14 @@ public class ShopController {
     public Result queryById(@RequestBody IdReq idReq) {
 		try {
 			Shop bean = shopService.findById(idReq.getId());
+			List<Image> imageList = imageService.findByGoodsId(idReq.getId());
+			List<String> imageUrlList = new ArrayList<>();
+			if(imageList!=null) {
+				for(Image image:imageList) {
+					imageUrlList.add(image.getUrl());
+				}
+			}
+			bean.setImageUrlList(imageUrlList);
 			return ResultGenerator.genSuccessResult(bean);
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
@@ -107,6 +150,17 @@ public class ShopController {
 			List<Shop> list = shopService.findAll();
 			List<Shop> targetList = new PageUtil<Shop>().getList(list,
 					pageReq.getPageNum(),pageReq.getPageSize());
+			
+			for(Shop bean:targetList) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList!=null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
+			}
 			return ResultGenerator.genSuccessResult(targetList);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -118,6 +172,16 @@ public class ShopController {
     public Result queryAll() {
 		try {
 			List<Shop> list = shopService.findAll();
+			for(Shop bean:list) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList!=null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
+			}
 			return ResultGenerator.genSuccessResult(list);
 		}catch(Exception e) {
 			e.printStackTrace();

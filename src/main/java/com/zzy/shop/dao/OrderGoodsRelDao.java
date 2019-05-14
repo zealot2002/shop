@@ -6,15 +6,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.zzy.shop.bean.GoodsTagRel;
+import com.zzy.shop.bean.OrderGoodsRel;
 
 
 @Repository
-public interface GoodsTagRelDao extends JpaRepository<GoodsTagRel, Long>  {
+public interface OrderGoodsRelDao extends JpaRepository<OrderGoodsRel, Long>  {
 
 	@Modifying
-	@Query(value="delete from t_goods_tag_rel where goods_id = :goodsId",nativeQuery=true)
-	void deleteByGoodsId(@Param("goodsId") Long goodsId);
+	@Query(value="delete from t_order_goods_rel where order_id = :orderId",nativeQuery=true)
+	void deleteByOrderId(@Param("orderId") Long orderId);
+
+	
 	
 }

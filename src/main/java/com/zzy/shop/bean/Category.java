@@ -1,5 +1,6 @@
 package com.zzy.shop.bean;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -14,6 +15,9 @@ public class Category implements Serializable{
 	private Long imageId;
     @Column(name = "in_used")
 	private Integer inUsed;
+    
+    @Transient
+    private String imageUrl;
 /**********************************************************************/
 	public Category() {
 		inUsed = 1;
@@ -31,9 +35,11 @@ public class Category implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Long getImageId() {
 		return imageId;
 	}
+
 	public void setImageId(Long imageId) {
 		this.imageId = imageId;
 	}
@@ -44,6 +50,14 @@ public class Category implements Serializable{
 
 	public void setInUsed(Integer inUsed) {
 		this.inUsed = inUsed;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	
 	

@@ -1,5 +1,7 @@
 package com.zzy.shop.bean.req;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,6 +17,9 @@ public class ShopReq{
     private String phone;
 	@ApiModelProperty(value="描述(add|update)")
     private String description;
+	
+	@ApiModelProperty(value="imageIdList(add|update)")
+    private List<Long> imageIdList;
 /**********************************************************************/
     
 	public Long getId() {
@@ -55,6 +60,14 @@ public class ShopReq{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<Long> getImageIdList() {
+		return imageIdList;
+	}
+
+	public void setImageIdList(List<Long> imageIdList) {
+		this.imageIdList = imageIdList;
 	}
 
 

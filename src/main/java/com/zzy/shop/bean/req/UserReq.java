@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class UserReq{
 	@ApiModelProperty(value="id(update)")
     private Long id;
-	@ApiModelProperty(value="用户名(add|update)")
+	@ApiModelProperty(value="用户名(add|update|login)")
     private String username;
 	@ApiModelProperty(value="密码(add|update)")
     private String password;

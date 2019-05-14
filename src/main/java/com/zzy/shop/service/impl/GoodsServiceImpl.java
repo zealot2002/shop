@@ -18,14 +18,9 @@ public class GoodsServiceImpl implements GoodsService {
     private GoodsDao dao;
 
 
-	/*假删除*/
 	@Override
 	public void deleteById(Long id) {
-		Optional<Goods> bean = dao.findById(id);
-		if(bean.isPresent()) {
-			bean.get().setInUsed(0);
-			dao.save(bean.get());
-		}
+		dao.deleteById(id);
 	}
 
 	@Override
@@ -55,6 +50,26 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
+	}
+
+	@Override
+	public List<Goods> findAllByTagId(Long tagId) {
+		return dao.findAllByTagId(tagId);
+	}
+	
+	@Override
+	public List<Goods> findAllByCategoryId(Long categoryId) {
+		return dao.findAllByCategoryId(categoryId);
+	}
+
+	@Override
+	public List<Goods> findAllByOrderId(Long orderId) {
+		return dao.findAllByOrderId(orderId);
+	}
+
+	@Override
+	public List<Goods> findAllByKeyword(String keyword) {
+		return dao.findAllByKeyword(keyword);
 	}
 	
 }

@@ -19,5 +19,8 @@ public interface UserDao extends JpaRepository<User, Long>  {
 	@Query(value="select * from t_order" ,nativeQuery=true)
 	List<Order> getOrders();
 
+
+	User findByUsername(String username);
+
 	
 }

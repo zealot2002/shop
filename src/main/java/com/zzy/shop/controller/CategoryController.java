@@ -13,6 +13,7 @@ import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.core.ServiceException;
 import com.zzy.shop.bean.Category;
+import com.zzy.shop.bean.Image;
 import com.zzy.shop.bean.req.CategoryReq;
 import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
@@ -33,9 +34,9 @@ import io.swagger.annotations.ApiOperation;
 public class CategoryController {
 	@Autowired
     private CategoryService categoryService;
-	
 	@Autowired
     private ImageService imageService;
+	
 	
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
@@ -90,6 +91,10 @@ public class CategoryController {
     public Result queryById(@RequestBody IdReq idReq) {
 		try {
 			Category bean = categoryService.findById(idReq.getId());
+			if(bean.getImageId()!=null) {
+				Image image = imageService.findById(bean.getImageId());
+				bean.setImageUrl(image!=null?image.getUrl():"");
+			}
 			return ResultGenerator.genSuccessResult(bean);
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
@@ -106,6 +111,12 @@ public class CategoryController {
 			List<Category> list = categoryService.findAll();
 			List<Category> targetList = new PageUtil<Category>().getList(list,
 					pageReq.getPageNum(),pageReq.getPageSize());
+			for(Category bean:targetList) {
+				if(bean.getImageId()!=null) {
+					Image image = imageService.findById(bean.getImageId());
+					bean.setImageUrl(image!=null?image.getUrl():"");
+				}
+			}
 			return ResultGenerator.genSuccessResult(targetList);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -117,6 +128,12 @@ public class CategoryController {
     public Result queryAll() {
 		try {
 			List<Category> list = categoryService.findAll();
+			for(Category bean:list) {
+				if(bean.getImageId()!=null) {
+					Image image = imageService.findById(bean.getImageId());
+					bean.setImageUrl(image!=null?image.getUrl():"");
+				}
+			}
 			return ResultGenerator.genSuccessResult(list);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -127,10 +144,18 @@ public class CategoryController {
 		if(CommonConstants.ACTION_UPDATE == action) {
 			if(!categoryService.existsById(req.getId()))
 				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+			
+			Category bean = categoryService.findByName(req.getName());
+			if(bean!=null&&bean.getId()!=req.getId()) {
+				throw new ServiceException("name 已经存在! name:"+req.getName());
+			}
+		}else if(CommonConstants.ACTION_ADD == action){
+			Category bean = categoryService.findByName(req.getName());
+			if(bean!=null){
+				throw new ServiceException("name 已经存在! name:"+req.getName());
+			}
 		}
-		if(!imageService.existsById(req.getImageId()))
-			throw new Exception("image id不存在! id:"+req.getImageId());
-		if(categoryService.findByName(req.getName())!=null)
-			throw new ServiceException("name 已经存在! name:"+req.getName());
+		
+			
 	}
 }

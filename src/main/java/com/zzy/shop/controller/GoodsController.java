@@ -1,4 +1,5 @@
 package com.zzy.shop.controller;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
+import com.zzy.shop.bean.Category;
 import com.zzy.shop.bean.Goods;
 import com.zzy.shop.bean.GoodsImageRel;
 import com.zzy.shop.bean.GoodsTagRel;
@@ -20,6 +22,8 @@ import com.zzy.shop.bean.Tag;
 import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
+import com.zzy.shop.bean.req.PageWithIdReq;
+import com.zzy.shop.bean.req.PageWithKeywordReq;
 import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.service.CategoryService;
 import com.zzy.shop.service.GoodsImageRelService;
@@ -36,7 +40,7 @@ import io.swagger.annotations.ApiOperation;
 * Created by CodeGenerator on 2017/07/24.
 */
 @RestController
-@RequestMapping("/Goods")
+@RequestMapping("/goods")
 public class GoodsController {
 	@Autowired
     private GoodsService goodsService;
@@ -55,15 +59,15 @@ public class GoodsController {
 	@Transactional
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
-    public Result delete(@RequestBody IdReq idQuery) {
+    public Result delete(@RequestBody IdReq req) {
 		try {
-			goodsImageRelService.deleteByGoodsId(idQuery.getId());
-			goodsTagRelService.deleteByGoodsId(idQuery.getId());
-			goodsService.deleteById(idQuery.getId());
+			goodsImageRelService.deleteByGoodsId(req.getId());
+			goodsTagRelService.deleteByGoodsId(req.getId());
+			goodsService.deleteById(req.getId());
 			return ResultGenerator.genSuccessResult();
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
-			return ResultGenerator.genFailResult("id为‘"+idQuery.getId()+"’的记录不存在!");
+			return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
@@ -79,6 +83,7 @@ public class GoodsController {
 			bean.setName(req.getName());
 			bean.setDesciption(req.getDesciption());
 			bean.setPrice(req.getPrice());
+			bean.setCategoryId(req.getCategoryId());
 			bean = goodsService.saveAndFlush(bean);
 			
 			/*handle imageList*/
@@ -117,6 +122,7 @@ public class GoodsController {
 			bean.setDesciption(req.getDesciption());
 			bean.setPrice(req.getPrice());
 			bean.setInUsed(req.getInUsed());
+			bean.setCategoryId(req.getCategoryId());
 			goodsService.save(bean);
 			
 			if(req.getImageIdList()!=null) {
@@ -132,7 +138,7 @@ public class GoodsController {
 			/*handle tagList*/
 			if(req.getTagIdList()!=null) {
 				goodsTagRelService.deleteByGoodsId(bean.getId());
-				for(Long id:req.getImageIdList()) {
+				for(Long id:req.getTagIdList()) {
 					GoodsTagRel rel = new GoodsTagRel();
 					rel.setGoodsId(bean.getId());
 					rel.setTagId(id);
@@ -151,8 +157,16 @@ public class GoodsController {
     public Result queryById(@RequestBody IdReq idReq) {
 		try {
 			Goods bean = goodsService.findById(idReq.getId());
+			Category category = categoryService.findById(bean.getCategoryId());
+			bean.setCategoryName(category.getName());
 			List<Image> imageList = imageService.findByGoodsId(idReq.getId());
-			bean.setImageList(imageList);
+			List<String> imageUrlList = new ArrayList<>();
+			if(imageList != null) {
+				for(Image image:imageList) {
+					imageUrlList.add(image.getUrl());
+				}
+			}
+			bean.setImageUrlList(imageUrlList);
 			List<Tag> tagList = tagService.findByGoodsId(idReq.getId());
 			bean.setTagList(tagList);
 			
@@ -174,9 +188,19 @@ public class GoodsController {
 					pageReq.getPageNum(),pageReq.getPageSize());
 			for(Goods bean:targetList) {
 				List<Image> imageList = imageService.findByGoodsId(bean.getId());
-				bean.setImageList(imageList);
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList != null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
 				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
 				bean.setTagList(tagList);
+				Category category = categoryService.findById(bean.getCategoryId());
+				if(category!=null) {
+					bean.setCategoryName(category.getName());	
+				}
 			}
 			return ResultGenerator.genSuccessResult(targetList);
 		}catch(Exception e) {
@@ -184,6 +208,90 @@ public class GoodsController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	@ApiOperation(value="根据tagId分页查询", notes="根据tagId分页查询")
+	@PostMapping(path = "/queryPageByTagId",consumes= MediaType.APPLICATION_JSON_VALUE)
+    public Result queryPageByTagId(@RequestBody PageWithIdReq req) {
+		try {
+			List<Goods> list = goodsService.findAllByTagId(req.getId());
+			List<Goods> targetList = new PageUtil<Goods>().getList(list,
+					req.getPageNum(),req.getPageSize());
+			for(Goods bean:targetList) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList != null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
+				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
+				bean.setTagList(tagList);
+				Category category = categoryService.findById(bean.getCategoryId());
+				bean.setCategoryName(category.getName());
+			}
+			return ResultGenerator.genSuccessResult(targetList);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResultGenerator.genFailResult(e.toString());
+		}
+    }
+	
+	@ApiOperation(value="根据categoryId分页查询", notes="根据categoryId分页查询")
+	@PostMapping(path = "/queryPageByCategoryId",consumes= MediaType.APPLICATION_JSON_VALUE)
+    public Result queryPageByCategoryId(@RequestBody PageWithIdReq req) {
+		try {
+			List<Goods> list = goodsService.findAllByCategoryId(req.getId());
+			List<Goods> targetList = new PageUtil<Goods>().getList(list,
+					req.getPageNum(),req.getPageSize());
+			for(Goods bean:targetList) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList != null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
+				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
+				bean.setTagList(tagList);
+				Category category = categoryService.findById(bean.getCategoryId());
+				bean.setCategoryName(category.getName());
+			}
+			return ResultGenerator.genSuccessResult(targetList);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResultGenerator.genFailResult(e.toString());
+		}
+    }
+	
+	@ApiOperation(value="根据Keyword分页查询", notes="根据Keyword分页查询")
+	@PostMapping(path = "/queryPageByKeyword",consumes= MediaType.APPLICATION_JSON_VALUE)
+    public Result queryPageByKeyword(@RequestBody PageWithKeywordReq req) {
+		try {
+			List<Goods> list = goodsService.findAllByKeyword(req.getKeyword());
+			List<Goods> targetList = new PageUtil<Goods>().getList(list,
+					req.getPageNum(),req.getPageSize());
+			for(Goods bean:targetList) {
+				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList != null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
+				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
+				bean.setTagList(tagList);
+				Category category = categoryService.findById(bean.getCategoryId());
+				bean.setCategoryName(category.getName());
+			}
+			return ResultGenerator.genSuccessResult(targetList);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResultGenerator.genFailResult(e.toString());
+		}
+    }
+	
 	@ApiOperation(value="查询所有", notes="查询所有")
 	@PostMapping(path = "/queryAll",consumes= MediaType.ALL_VALUE)
     public Result queryAll() {
@@ -191,9 +299,17 @@ public class GoodsController {
 			List<Goods> list = goodsService.findAll();
 			for(Goods bean:list) {
 				List<Image> imageList = imageService.findByGoodsId(bean.getId());
-				bean.setImageList(imageList);
+				List<String> imageUrlList = new ArrayList<>();
+				if(imageList != null) {
+					for(Image image:imageList) {
+						imageUrlList.add(image.getUrl());
+					}
+				}
+				bean.setImageUrlList(imageUrlList);
 				List<Tag> tagList = tagService.findByGoodsId(bean.getId());
 				bean.setTagList(tagList);
+				Category category = categoryService.findById(bean.getCategoryId());
+				bean.setCategoryName(category.getName());
 			}
 			return ResultGenerator.genSuccessResult(list);
 		}catch(Exception e) {

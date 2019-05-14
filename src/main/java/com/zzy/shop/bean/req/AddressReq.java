@@ -9,6 +9,9 @@ public class AddressReq{
     private Long userId;
 	@ApiModelProperty(value="描述(add|update)")
     private String description;
+	@ApiModelProperty(value="phone(add|update)")
+    private String phone;
+	
 /**********************************************************************/
     
 	public Long getId() {
@@ -28,6 +31,12 @@ public class AddressReq{
 	}
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
     
 

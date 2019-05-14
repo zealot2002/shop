@@ -10,12 +10,9 @@ public class Image implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@Column(name = "in_used")
-	private Integer inUsed;
     private String url;
 /**********************************************************************/
     public Image() {
-    	inUsed = 1;
     }
     
 	public Long getId() {
@@ -30,15 +27,4 @@ public class Image implements Serializable{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-	public Integer getInUsed() {
-		return inUsed;
-	}
-
-	public void setInUsed(Integer inUsed) {
-		this.inUsed = inUsed;
-	}
-
-    
-
 }

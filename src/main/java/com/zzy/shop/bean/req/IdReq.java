@@ -5,6 +5,12 @@ public class IdReq{
 	@ApiModelProperty(value="id",required=true)
     private Long id;
 
+	public IdReq() {
+		
+	}
+	public IdReq(Integer id) {
+		this.id = (long)id;
+	}
 	public Long getId() {
 		return id;
 	}

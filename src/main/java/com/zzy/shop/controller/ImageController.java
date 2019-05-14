@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 * Created by CodeGenerator on 2017/07/24.
 */
 @RestController
-@RequestMapping("/Image")
+@RequestMapping("/image")
 public class ImageController {
 	@Autowired
     private ImageService ImageService;
@@ -68,7 +68,6 @@ public class ImageController {
 				return ResultGenerator.genFailResult("id为‘"+req.getId()+"’的记录不存在!");
 			}
 			bean.setUrl(req.getUrl());
-			bean.setInUsed(req.getInUsed());
 			ImageService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {

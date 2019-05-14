@@ -3,13 +3,13 @@ package com.zzy.shop.bean.req;
 import io.swagger.annotations.ApiModelProperty;
 
 public class CategoryReq{
-	@ApiModelProperty(value="id(update)")
+	@ApiModelProperty(value="id(update)",required = false)
 	private Long id;
-	@ApiModelProperty(value="名称(add|update)")
+	@ApiModelProperty(value="名称(add|update)",required = false)
     private String name;
-	@ApiModelProperty(value="icon(add|update)")
+	@ApiModelProperty(value="imageId(add|update)",required = false)
 	private Long imageId;
-	@ApiModelProperty(value="是否有效(update)")
+	@ApiModelProperty(value="是否有效(update)",required = false)
 	private Integer inUsed;
 /**********************************************************************/
 	
@@ -25,6 +25,7 @@ public class CategoryReq{
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public Long getImageId() {
 		return imageId;
 	}

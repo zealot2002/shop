@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,13 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
+import com.zzy.shop.bean.Goods;
+import com.zzy.shop.bean.GoodsImageRel;
+import com.zzy.shop.bean.Image;
 import com.zzy.shop.bean.Order;
+import com.zzy.shop.bean.OrderGoodsRel;
 import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.OrderReq;
 import com.zzy.shop.bean.req.PageReq;
 import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.service.GoodsService;
+import com.zzy.shop.service.OrderGoodsRelService;
 import com.zzy.shop.service.OrderService;
 import com.zzy.shop.service.UserService;
 import com.zzy.shop.utils.PageUtil;
@@ -37,6 +43,9 @@ public class OrderController {
     private GoodsService goodsService;
 	@Autowired
     private UserService userService;
+	@Autowired
+    private OrderGoodsRelService orderGoodsRelService;
+	
 	
 	@ApiOperation(value="删除", notes="删除")
 	@PostMapping(path = "/delete",consumes= MediaType.APPLICATION_JSON_VALUE)
@@ -52,7 +61,7 @@ public class OrderController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
-	
+	@Transactional
 	@ApiOperation(value="新增", notes="新增")
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody OrderReq req) {
@@ -61,6 +70,20 @@ public class OrderController {
 			Order bean = new Order();
 			bean.setRemarks(req.getRemarks());
 			bean.setUserId(req.getUserId());
+			bean.setPhone(req.getPhone());
+			bean.setAddress(req.getAddress());
+			bean = orderService.saveAndFlush(bean);
+			
+			/*handle goodsIdList*/
+			if(req.getGoodsIdList()!=null) {
+				for(Long id:req.getGoodsIdList()) {
+					OrderGoodsRel rel = new OrderGoodsRel();
+					rel.setGoodsId(id);
+					rel.setOrderId(bean.getId());
+					orderGoodsRelService.save(rel);
+				}
+			}
+			
 			orderService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -77,6 +100,20 @@ public class OrderController {
 			Order bean = orderService.findById(req.getId());
 			bean.setState(req.getState());
 			bean.setRemarks(req.getRemarks());
+			bean.setPhone(req.getPhone());
+			bean.setAddress(req.getAddress());
+			
+			/*handle goodsIdList*/
+			if(req.getGoodsIdList()!=null) {
+				orderGoodsRelService.deleteByOrderId(bean.getId());
+				for(Long id:req.getGoodsIdList()) {
+					OrderGoodsRel rel = new OrderGoodsRel();
+					rel.setGoodsId(id);
+					rel.setOrderId(bean.getId());
+					orderGoodsRelService.save(rel);
+				}
+			}
+			
 			orderService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -87,13 +124,20 @@ public class OrderController {
 	
 	@ApiOperation(value="通过id查询", notes="通过id查询")
 	@PostMapping(path = "/queryById",consumes= MediaType.APPLICATION_JSON_VALUE)
-    public Result queryById(@RequestBody IdReq idQuery) {
+    public Result queryById(@RequestBody IdReq idReq) {
 		try {
-			Order bean = orderService.findById(idQuery.getId());
+			Order bean = orderService.findById(idReq.getId());
+			List<Goods> goodList = goodsService.findAllByOrderId(idReq.getId());
+			Float totalPrice = 0f;
+			for(Goods goods:goodList) {
+				totalPrice+=goods.getPrice();
+			}
+			bean.setTotalPrice(totalPrice);
+			bean.setGoodsList(goodList);
 			return ResultGenerator.genSuccessResult(bean);
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
-			return ResultGenerator.genFailResult("id为‘"+idQuery.getId()+"’的记录不存在!");
+			return ResultGenerator.genFailResult("id为‘"+idReq.getId()+"’的记录不存在!");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());
@@ -132,9 +176,11 @@ public class OrderController {
 		if(!userService.existsById(req.getUserId()))
 			throw new Exception("user id不存在! id:"+req.getUserId());
 		
-		for(Long id:req.getGoodsIdList()) {
-			if(!goodsService.existsById(id))
-				throw new Exception("goods id不存在! id:"+id);
+		if(req.getGoodsIdList()!=null) {
+			for(Long id:req.getGoodsIdList()) {
+				if(!goodsService.existsById(id))
+					throw new Exception("goods id不存在! id:"+id);
+			}	
 		}
 	}
 }

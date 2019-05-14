@@ -30,15 +30,10 @@ public class User implements Serializable{
     private String avatar;
     @Column(name = "in_used")
     private Integer inUsed;
-    @Transient
-    private List<Order> orderList;
-    @Transient
-    private List<Address> addressList;
+    
 /******************************************************************************/
 	public User() {
 		createdTime = new Date();
-		orderList = new ArrayList<>();
-		addressList = new ArrayList<>();
 		inUsed = 1;
 	}
     public Long getId() {
@@ -89,22 +84,6 @@ public class User implements Serializable{
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
-	public List<Address> getAddressList() {
-		return addressList;
-	}
-
-	public void setAddressList(List<Address> addressList) {
-		this.addressList = addressList;
-	}
-
-	public void setOrderList(List<Order> orderList) {
-		this.orderList = orderList;
-	}
-	
-	public List<Order> getOrderList() {
-		return orderList;
-	}
 	
 	public Integer getInUsed() {
 		return inUsed;

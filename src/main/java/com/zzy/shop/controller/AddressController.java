@@ -15,6 +15,7 @@ import com.zzy.shop.bean.Address;
 import com.zzy.shop.bean.req.AddressReq;
 import com.zzy.shop.bean.req.CategoryReq;
 import com.zzy.shop.bean.req.IdReq;
+import com.zzy.shop.bean.req.OrderReq;
 import com.zzy.shop.bean.req.PageReq;
 import com.zzy.shop.constants.CommonConstants;
 import com.zzy.shop.service.AddressService;
@@ -58,6 +59,7 @@ public class AddressController {
 			Address bean = new Address();
 			bean.setUserId(req.getUserId());
 			bean.setDescription(req.getDescription());
+			bean.setPhone(req.getPhone());
 			addressService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -73,6 +75,7 @@ public class AddressController {
 			checkValid(req,CommonConstants.ACTION_UPDATE);
 			Address bean = addressService.findById(req.getId());
 			bean.setDescription(req.getDescription());
+			bean.setPhone(req.getPhone());
 			addressService.save(bean);
 	        return ResultGenerator.genSuccessResult();
 		}catch(Exception e) {
@@ -95,6 +98,21 @@ public class AddressController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
+	
+	@ApiOperation(value="通过userId查询", notes="通过userId查询")
+	@PostMapping(path = "/queryByUserId",consumes= MediaType.APPLICATION_JSON_VALUE)
+    public Result queryByUserId(@RequestBody IdReq idReq) {
+		try {
+			if(!userService.existsById(idReq.getId()))
+				throw new Exception("user id不存在! id:"+idReq.getId());
+			List<Address> list = addressService.findAllByUserId(idReq.getId());
+			return ResultGenerator.genSuccessResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResultGenerator.genFailResult(e.toString());
+		}
+    }
+	
 	@ApiOperation(value="分页查询", notes="分页查询")
 	@PostMapping(path = "/queryPage",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result queryPage(@RequestBody PageReq pageReq) {

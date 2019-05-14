@@ -18,25 +18,25 @@ public class Order implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
-    
+    @Column(name = "user_id")
+    private Long userId;
     @Column(name = "create_time")
     private Date createdTime;
     
     private Integer state = 0;
-    
     private String remarks;
-    
-    @Column(name = "user_id")
-    private Long userId;
+    private String phone;
+    private String address;
     
     @Transient
     private List<Goods> goodsList;
-
+    @Transient
+    private Float totalPrice;
 /**********************************************************************/
     public Order(){
     	createdTime = new Date();
     	code = "No."+System.currentTimeMillis();
-    	state = CommonConstants.ORDER_STATE_CREATED;
+    	state = CommonConstants.ORDER_STATE_NEED_PAY;
     }
     
 	public Long getId() {
@@ -94,7 +94,28 @@ public class Order implements Serializable{
 	public void setGoodsList(List<Goods> goodsList) {
 		this.goodsList = goodsList;
 	}
-	
-	
-	
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Float getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Float totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 }

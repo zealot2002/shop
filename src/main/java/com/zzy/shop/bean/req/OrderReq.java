@@ -15,6 +15,10 @@ public class OrderReq{
     private Integer state = 0;
     @ApiModelProperty(value="备注(add|update)")
     private String remarks;
+    @ApiModelProperty(value="电话(add|update)")
+    private String phone;
+    @ApiModelProperty(value="地址(add|update)")
+    private String address;
     @ApiModelProperty(value="goodsIdList(add|update)")
     private List<Long> goodsIdList;
     
@@ -57,6 +61,22 @@ public class OrderReq{
 
 	public void setGoodsIdList(List<Long> goodsIdList) {
 		this.goodsIdList = goodsIdList;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	

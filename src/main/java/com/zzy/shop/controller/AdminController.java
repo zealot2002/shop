@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
 * Created by CodeGenerator on 2017/07/24.
 */
 @RestController
-@RequestMapping("/Admin")
+@RequestMapping("/admin")
 public class AdminController {
 	@Autowired
     private AdminService adminService;
@@ -77,6 +77,21 @@ public class AdminController {
 			bean.setPassword(req.getPassword());
 			adminService.save(bean);
 	        return ResultGenerator.genSuccessResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResultGenerator.genFailResult(e.toString());
+		}
+    }
+	
+	@ApiOperation(value="login", notes="login")
+	@PostMapping(path = "/login",consumes= MediaType.APPLICATION_JSON_VALUE)
+    public Result login(@RequestBody AdminReq req) {
+		try {
+			Admin bean = adminService.findByUsername(req.getUsername());
+			if(bean!=null&&bean.getPassword().equals(req.getPassword())) {
+				return ResultGenerator.genSuccessResult(bean);
+			}
+			return ResultGenerator.genFailResult("用户名或密码错误");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());

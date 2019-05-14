@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSONObject;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
@@ -18,7 +19,6 @@ import com.zzy.shop.service.UserService;
 import com.zzy.shop.bean.Address;
 import com.zzy.shop.bean.Order;
 import com.zzy.shop.bean.User;
-import com.zzy.shop.bean.req.GoodsReq;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
 import com.zzy.shop.bean.req.UserReq;
@@ -105,7 +105,6 @@ public class UserController {
     public Result queryById(@RequestBody IdReq idReq) {
 		try {
 			User bean = userService.findById(idReq.getId());
-			setRelList(bean);
 			return ResultGenerator.genSuccessResult(bean);
 		}catch(EmptyResultDataAccessException e1) {
 			e1.printStackTrace();
@@ -122,7 +121,6 @@ public class UserController {
 			List<User> list = userService.findAll();
 			List<User> targetList = new PageUtil<User>().getList(list,
 					pageReq.getPageNum(),pageReq.getPageSize());
-			setRelList(targetList);
 			return ResultGenerator.genSuccessResult(targetList);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -134,7 +132,6 @@ public class UserController {
     public Result queryAll() {
 		try {
 			List<User> list = userService.findAll();
-			setRelList(list);
 			return ResultGenerator.genSuccessResult(list);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -142,20 +139,22 @@ public class UserController {
 		}
     }
 	
-	private void setRelList(List<User> list) {
-		for(User user:list) {
-			List<Order> orders = orderService.findAllByUserId(user.getId());
-			List<Address> addressList = addressService.findAllByUserId(user.getId());
-			user.setOrderList(orders);
-			user.setAddressList(addressList);
-		}
-	}
-	private void setRelList(User user) {
-		List<Order> orders = orderService.findAllByUserId(user.getId());
-		List<Address> addressList = addressService.findAllByUserId(user.getId());
-		user.setOrderList(orders);
-		user.setAddressList(addressList);
-	}
+//	private void setRelList(List<User> list) {
+//		for(User user:list) {
+//			List<Order> orders = orderService.findAllByUserId(user.getId());
+//			List<Address> addressList = addressService.findAllByUserId(user.getId());
+//			user.setOrderList(orders);
+//			user.setAddressList(addressList);
+//		}
+//	}
+//	private void setRelList(User user) {
+//		List<Order> orders = orderService.findAllByUserId(user.getId());
+//		List<Address> addressList = addressService.findAllByUserId(user.getId());
+//		user.setOrderList(orders);
+//		user.setAddressList(addressList);
+//	}
+	
+	
 	
 	private void checkValid(UserReq req, int action) throws Exception{
 		if(CommonConstants.ACTION_UPDATE == action) {

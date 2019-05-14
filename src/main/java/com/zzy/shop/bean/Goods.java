@@ -19,8 +19,11 @@ public class Goods implements Serializable{
 	private Float price;
 	@Column(name = "in_used")
 	private Integer inUsed;
+	
 	@Transient
-    private List<Image> imageList;
+	private String categoryName;
+	@Transient
+    private List<String> imageUrlList;
     @Transient
     private List<Tag> tagList;
 //    private Order order;
@@ -28,7 +31,7 @@ public class Goods implements Serializable{
 /**********************************************************************/
 	
     public Goods() {
-    	imageList = new ArrayList<>();
+    	imageUrlList = new ArrayList<>();
     	tagList = new ArrayList<>();
     	inUsed = 1;
     }
@@ -75,17 +78,24 @@ public class Goods implements Serializable{
 	public void setInUsed(Integer inUsed) {
 		this.inUsed = inUsed;
 	}
-	public List<Image> getImageList() {
-		return imageList;
-	}
-	public void setImageList(List<Image> imageList) {
-		this.imageList = imageList;
-	}
+	
 	public List<Tag> getTagList() {
 		return tagList;
 	}
 	public void setTagList(List<Tag> tagList) {
 		this.tagList = tagList;
+	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	public List<String> getImageUrlList() {
+		return imageUrlList;
+	}
+	public void setImageUrlList(List<String> imageUrlList) {
+		this.imageUrlList = imageUrlList;
 	}
 
 	
