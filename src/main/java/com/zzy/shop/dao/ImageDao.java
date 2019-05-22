@@ -17,6 +17,10 @@ public interface ImageDao extends JpaRepository<Image, Long>  {
 	@Query(value="select * from t_image where id "
 			+ "in (select image_id from t_goods_image_rel where goods_id = :goodsId)",nativeQuery=true)
 	List<Image> findByGoodsId(@Param("goodsId") Long goodsId);
+
+	@Query(value="select * from t_image where id "
+			+ "in (select image_id from t_shop_image_rel where shop_id = :shopId)",nativeQuery=true)
+	List<Image> findByShopId(@Param("shopId") Long shopId);
 	
 	
 }

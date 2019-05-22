@@ -83,6 +83,7 @@ public class GoodsController {
 			bean.setName(req.getName());
 			bean.setDesciption(req.getDesciption());
 			bean.setPrice(req.getPrice());
+			bean.setOldPrice(req.getOldPrice());
 			bean.setCategoryId(req.getCategoryId());
 			bean = goodsService.saveAndFlush(bean);
 			
@@ -121,6 +122,7 @@ public class GoodsController {
 			bean.setName(req.getName());
 			bean.setDesciption(req.getDesciption());
 			bean.setPrice(req.getPrice());
+			bean.setOldPrice(req.getOldPrice());
 			bean.setInUsed(req.getInUsed());
 			bean.setCategoryId(req.getCategoryId());
 			goodsService.save(bean);

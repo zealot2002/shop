@@ -14,6 +14,8 @@ public class GoodsReq{
     private String desciption;
 	@ApiModelProperty(value="价格(add|update)")
 	private Float price;
+	@ApiModelProperty(value="old价格(add|update)")
+	private Float oldPrice;
 	@ApiModelProperty(value="是否有效(update)")
 	private Integer inUsed;
 	@ApiModelProperty(value="imageIdList(add|update)")
@@ -81,6 +83,12 @@ public class GoodsReq{
 	}
 	public void setInUsed(Integer inUsed) {
 		this.inUsed = inUsed;
+	}
+	public Float getOldPrice() {
+		return oldPrice;
+	}
+	public void setOldPrice(Float oldPrice) {
+		this.oldPrice = oldPrice;
 	}
 
 	

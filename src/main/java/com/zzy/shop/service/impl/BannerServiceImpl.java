@@ -1,22 +1,24 @@
 package com.zzy.shop.service.impl;
-import com.zzy.shop.bean.Image;
-
+import com.zzy.shop.bean.Banner;
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
-import com.zzy.shop.dao.ImageDao;
-import com.zzy.shop.service.ImageService;
+
+import com.zzy.shop.dao.BannerDao;
+import com.zzy.shop.service.BannerService;
 
 
 /**
  * Created by CodeGenerator on 2017/07/24.
  */
 @Component
-public class ImageServiceImpl implements ImageService {
+public class BannerServiceImpl implements BannerService {
 
 	@Resource
-    private ImageDao dao;
+    private BannerDao dao;
 
 
 	@Override
@@ -25,13 +27,13 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public Image save(Image model) {
+	public Banner save(Banner model) {
 		return dao.save(model);
 	}
 
 	@Override
-	public Image findById(Long id) {
-		Optional<Image> bean = dao.findById(id);
+	public Banner findById(Long id) {
+		Optional<Banner> bean = dao.findById(id);
 		if(bean.isPresent()) {
 			return bean.get();
 		}
@@ -39,27 +41,17 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public List<Image> findAll() {
+	public List<Banner> findAll() {
 		return dao.findAll();
 	}
 
 	@Override
-	public Image saveAndFlush(Image model) {
+	public Banner saveAndFlush(Banner model) {
 		return dao.saveAndFlush(model);
 	}
 
 	@Override
 	public boolean existsById(Long id) {
 		return dao.existsById(id);
-	}
-
-	@Override
-	public List<Image> findByGoodsId(Long goodsId) {
-		return dao.findByGoodsId(goodsId);
-	}
-
-	@Override
-	public List<Image> findByShopId(Long shopId) {
-		return dao.findByShopId(shopId);
 	}
 }

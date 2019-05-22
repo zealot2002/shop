@@ -1,4 +1,4 @@
-package com.zzy.shop.appcontroller;
+package com.zzy.shop.controller;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zzy.shop.bean.Banner;
 import com.zzy.shop.bean.Goods;
 import com.zzy.shop.bean.Image;
 import com.zzy.shop.bean.Shop;
@@ -19,11 +21,14 @@ import com.zzy.shop.bean.Tag;
 import com.zzy.shop.bean.User;
 import com.zzy.shop.bean.req.PageReq;
 import com.zzy.shop.bean.req.UserReq;
+import com.zzy.shop.service.BannerService;
 import com.zzy.shop.service.GoodsService;
 import com.zzy.shop.service.ImageService;
 import com.zzy.shop.service.ShopService;
+import com.zzy.shop.service.TagService;
 import com.zzy.shop.service.UserService;
 import com.zzy.shop.utils.PageUtil;
+import com.zzy.shop.utils.SectionUtil;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -32,8 +37,8 @@ import io.swagger.annotations.ApiOperation;
 * Created by CodeGenerator on 2017/07/24.
 */
 @RestController
-@RequestMapping("/miaozu")
-public class App1Controller {
+@RequestMapping("/jiuxian")
+public class App2Controller {
 	@Autowired
     private UserService userService;
 	@Autowired
@@ -43,14 +48,57 @@ public class App1Controller {
 	
 	@Autowired
     private GoodsService goodsService;
-/*****************************************************************************************/
 	
+	@Autowired
+    private BannerService bannerService;
+	
+	@Autowired
+    private TagService tagService;
+	
+/*****************************************************************************************/
+	@ApiOperation(value="home1SectionList", notes="home1SectionList")
+	@PostMapping(path = "/home1SectionList",consumes= MediaType.APPLICATION_JSON_VALUE)
+    public Result home1SectionList(@RequestBody PageReq pageReq) {
+		try {
+			List<Object> list = getAllSectionList();
+			List<Object> targetList = new PageUtil<Object>().getList(list,
+					pageReq.getPageNum(),pageReq.getPageSize());
+			return ResultGenerator.genSuccessResult(targetList);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResultGenerator.genFailResult(e.toString());
+		}
+    }
+
+	private List<Object> getAllSectionList(){
+		JSONArray data = new JSONArray();
+		data.add(SectionUtil.banner(bannerService));
+		data.add(SectionUtil.noticeList());
+		data.add(SectionUtil.divider());
+		data.add(SectionUtil.countDown());
+		data.add(SectionUtil.miaopai(goodsService,imageService,tagService));
+		data.add(SectionUtil.title("中国白酒馆"));
+		data.add(SectionUtil.shortcut(1));
+		data.add(SectionUtil.title("世界葡萄酒馆"));
+		data.add(SectionUtil.shortcut(2));
+		data.add(SectionUtil.title("小资洋酒馆"));
+		data.add(SectionUtil.shortcut(3));
+		data.add(SectionUtil.title("黄保啤综合馆"));
+		data.add(SectionUtil.shortcut(4));
+		return data;
+		
+	}
+
 	@ApiOperation(value="bannerList", notes="bannerList")
 	@PostMapping(path = "/bannerList",consumes= MediaType.ALL_VALUE)
     public Result bannerList() {
 		try {
 			List<Image> list = imageService.findAll();
-			return ResultGenerator.genSuccessResult(list);
+			List<Image> list2 = new ArrayList<>();
+			for(int i=0;i<5;i++) {
+				list2.add(list.get(i));
+			}
+			return ResultGenerator.genSuccessResult(list2);
 		}catch(Exception e) {
 			e.printStackTrace();
 			return ResultGenerator.genFailResult(e.toString());

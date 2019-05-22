@@ -17,6 +17,8 @@ public class Goods implements Serializable{
     private String name;
     private String desciption;
 	private Float price;
+	@Column(name = "old_price")
+	private Float oldPrice;
 	@Column(name = "in_used")
 	private Integer inUsed;
 	
@@ -96,6 +98,12 @@ public class Goods implements Serializable{
 	}
 	public void setImageUrlList(List<String> imageUrlList) {
 		this.imageUrlList = imageUrlList;
+	}
+	public Float getOldPrice() {
+		return oldPrice;
+	}
+	public void setOldPrice(Float oldPrice) {
+		this.oldPrice = oldPrice;
 	}
 
 	

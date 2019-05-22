@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +66,7 @@ public class ShopController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
-	
+	@Transactional
 	@ApiOperation(value="新增", notes="新增")
 	@PostMapping(path = "/add",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody ShopReq req) {
@@ -76,6 +77,7 @@ public class ShopController {
 			bean.setAddress(req.getAddress());
 			bean.setDescription(req.getDescription());
 			bean.setPhone(req.getPhone());
+			bean = shopService.saveAndFlush(bean);
 			
 			/*handle imageList*/
 			if(req.getImageIdList()!=null) {
@@ -93,7 +95,7 @@ public class ShopController {
 			return ResultGenerator.genFailResult(e.toString());
 		}
     }
-
+	@Transactional
 	@ApiOperation(value="修改", notes="修改")
 	@PostMapping(path = "/update",consumes= MediaType.APPLICATION_JSON_VALUE)
     public Result update(@RequestBody ShopReq req) {
@@ -152,7 +154,7 @@ public class ShopController {
 					pageReq.getPageNum(),pageReq.getPageSize());
 			
 			for(Shop bean:targetList) {
-				List<Image> imageList = imageService.findByGoodsId(bean.getId());
+				List<Image> imageList = imageService.findByShopId(bean.getId());
 				List<String> imageUrlList = new ArrayList<>();
 				if(imageList!=null) {
 					for(Image image:imageList) {
@@ -192,8 +194,9 @@ public class ShopController {
 		if(CommonConstants.ACTION_UPDATE == action) {
 			if(!shopService.existsById(req.getId()))
 				throw new Exception("id为‘"+req.getId()+"’的记录不存在!");
+		}else if(CommonConstants.ACTION_ADD == action) {
+			if(shopService.findByName(req.getName())!=null)
+				throw new ServiceException("name 已经存在! name:"+req.getName());
 		}
-		if(shopService.findByName(req.getName())!=null)
-			throw new ServiceException("name 已经存在! name:"+req.getName());
 	}
 }
