@@ -6,6 +6,8 @@ import com.zzy.shop.service.UserService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 @ApiModel
 public class UserReq{
 	@ApiModelProperty(value="id(update)")
@@ -18,6 +20,12 @@ public class UserReq{
     private String phone;
     @ApiModelProperty(value="头像(add|update)")
     private String avatar;
+
+	@ApiModelProperty(value="设备号(add|update)")
+	private String deviceId;
+
+	private Date expiredTime;
+
 /******************************************************************************/
     public Long getId() {
 		return id;
@@ -48,5 +56,21 @@ public class UserReq{
 	}
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public Date getExpiredTime() {
+		return expiredTime;
+	}
+
+	public void setExpiredTime(Date expiredTime) {
+		this.expiredTime = expiredTime;
 	}
 }

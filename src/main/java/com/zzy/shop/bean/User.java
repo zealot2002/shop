@@ -22,10 +22,15 @@ public class User implements Serializable{
 	
     private String username;
     private String password;
-    
+    private String deviceId;
     @Column(name = "register_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
+
+    @Column(name = "expired_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiredTime;
+
     private String phone;
     private String avatar;
     @Column(name = "in_used")
@@ -91,5 +96,20 @@ public class User implements Serializable{
 	public void setInUsed(Integer inUsed) {
 		this.inUsed = inUsed;
 	}
-	
+
+    public Date getExpiredTime() {
+        return expiredTime;
+    }
+
+    public void setExpiredTime(Date expiredTime) {
+        this.expiredTime = expiredTime;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 }
