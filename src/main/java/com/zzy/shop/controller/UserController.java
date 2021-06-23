@@ -1,7 +1,10 @@
 package com.zzy.shop.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,15 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.fastjson.JSONObject;
 
 import com.zzy.shop.core.Result;
 import com.zzy.shop.core.ResultGenerator;
 import com.zzy.shop.service.AddressService;
 import com.zzy.shop.service.OrderService;
 import com.zzy.shop.service.UserService;
-import com.zzy.shop.bean.Address;
-import com.zzy.shop.bean.Order;
 import com.zzy.shop.bean.User;
 import com.zzy.shop.bean.req.IdReq;
 import com.zzy.shop.bean.req.PageReq;
@@ -71,9 +71,6 @@ public class UserController {
             User bean = new User();
             bean.setUsername(req.getUsername());
             bean.setPassword(req.getPassword());
-            bean.setPhone(req.getPhone());
-            bean.setAvatar(req.getAvatar());
-            bean.setDeviceId(req.getDeviceId());
             bean.setExpiredTime(req.getExpiredTime());
             userService.save(bean);
             return ResultGenerator.genSuccessResult();
@@ -94,9 +91,6 @@ public class UserController {
             } else {
                 bean.setUsername(req.getUsername());
                 bean.setPassword(req.getPassword());
-                bean.setPhone(req.getPhone());
-                bean.setAvatar(req.getAvatar());
-                bean.setDeviceId(req.getDeviceId());
                 bean.setExpiredTime(req.getExpiredTime());
                 userService.save(bean);
             }
@@ -148,10 +142,42 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "校验", notes = "校验")
-    @PostMapping(path = "/validation", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Result validation(UserReq req) {
+    @ApiOperation(value = "注册", notes = "注册")
+    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Result register(@RequestBody UserReq req) {
         try {
+            User user = userService.findByUsername(req.getUsername());
+            if (user != null) {
+                return ResultGenerator.genFailResult("名为‘" + req.getUsername() + "’的用户已经存在");
+            }
+
+            User newUser = new User();
+            newUser.setUsername(req.getUsername());
+            newUser.setPassword(req.getPassword());
+            newUser.setDeviceId(req.getDeviceId());
+            newUser.setCreatedTime(new Date());
+            newUser.setExpiredTime(getTheDayAfterTomorrow());
+
+            userService.save(newUser);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return ResultGenerator.genSuccessResult(simpleDateFormat.format(newUser.getExpiredTime()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultGenerator.genFailResult(e.toString());
+        }
+    }
+
+    private Date getTheDayAfterTomorrow() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 3);
+        return calendar.getTime();
+    }
+
+    @ApiOperation(value = "登录", notes = "登录")
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Result login(@RequestBody UserReq req) {
+        try {
+            System.out.println("req.getUsername():  -------"+req.getUsername());
             User user = userService.findByUsername(req.getUsername());
             if (user == null) {
                 return ResultGenerator.genFailResult("名为‘" + req.getUsername() + "’的用户不存在");
@@ -168,18 +194,17 @@ public class UserController {
                 //过期了
                 return ResultGenerator.genFailResult("当前账号已过期，("+user.getExpiredTime().toString()+")");
             }
-            if(user.getDeviceId() == null){
-                //这是一个新用户、更新它的deviceId
-                user.setDeviceId(req.getDeviceId());
-                userService.save(user);
-            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String str = simpleDateFormat.format(user.getExpiredTime());
+            System.out.println("有效期至:  -------"+str);
 
-            return ResultGenerator.genSuccessResult(user.getExpiredTime());
+            return ResultGenerator.genSuccessResult(str);
         } catch (Exception e) {
             e.printStackTrace();
             return ResultGenerator.genFailResult(e.toString());
         }
     }
+
 
     private void checkValid(UserReq req, int action) throws Exception {
         if (CommonConstants.ACTION_UPDATE == action) {
