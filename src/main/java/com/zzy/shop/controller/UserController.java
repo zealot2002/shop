@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.zzy.shop.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
@@ -94,7 +95,7 @@ public class UserController {
                 bean.setExpiredTime(req.getExpiredTime());
                 userService.save(bean);
             }
-            return ResultGenerator.genSuccessResult();
+            return ResultGenerator.genSuccessResult("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
             return ResultGenerator.genFailResult(e.toString());
@@ -159,18 +160,22 @@ public class UserController {
             newUser.setExpiredTime(getTheDayAfterTomorrow());
 
             userService.save(newUser);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            return ResultGenerator.genSuccessResult(simpleDateFormat.format(newUser.getExpiredTime()));
+
+            System.out.println("新用户注册 "+user.getUsername()+" 有效期至:  -------"+user.getExpiredTime());
+
+            return ResultGenerator.genSuccessResult(newUser.getExpiredTime());
         } catch (Exception e) {
             e.printStackTrace();
             return ResultGenerator.genFailResult(e.toString());
         }
     }
 
-    private Date getTheDayAfterTomorrow() {
+    private String getTheDayAfterTomorrow() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 3);
-        return calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(calendar.getTime());
+        return dateStr;
     }
 
     @ApiOperation(value = "登录", notes = "登录")
@@ -188,17 +193,44 @@ public class UserController {
             }
             if (user.getDeviceId() != null && !user.getDeviceId().equals(req.getDeviceId())) {
                 //有设备号，并且不相等
-                return ResultGenerator.genFailResult("请使用同一设备登录 (一个账号绑定一个设备)");
+                return ResultGenerator.genFailResult("请使用注册时绑定的设备 (一个账号绑定一个设备)");
             }
-            if (user.getExpiredTime().compareTo(new Date()) < 0){
+            if (DateUtils.string2Date(user.getExpiredTime()).compareTo(new Date()) < 0){
                 //过期了
                 return ResultGenerator.genFailResult("当前账号已过期，("+user.getExpiredTime().toString()+")");
             }
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String str = simpleDateFormat.format(user.getExpiredTime());
-            System.out.println("有效期至:  -------"+str);
+            System.out.println("用户 "+user.getUsername()+" 已登录 "+"有效期至:  -------"+user.getExpiredTime());
 
-            return ResultGenerator.genSuccessResult(str);
+            return ResultGenerator.genSuccessResult(user.getExpiredTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultGenerator.genFailResult(e.toString());
+        }
+    }
+
+    @ApiOperation(value = "重置密码", notes = "重置密码")
+    @PostMapping(path = "/resetPw", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Result resetPw(@RequestBody UserReq req) {
+        try {
+            System.out.println("req.getUsername():  -------"+req.getUsername());
+            User user = userService.findByUsername(req.getUsername());
+            if (user == null) {
+                return ResultGenerator.genFailResult("名为‘" + req.getUsername() + "’的用户不存在");
+            }
+
+            if (user.getDeviceId() != null && !user.getDeviceId().equals(req.getDeviceId())) {
+                //有设备号，并且不相等
+                return ResultGenerator.genFailResult("请使用注册时绑定的设备 (一个账号绑定一个设备)");
+            }
+
+            if (DateUtils.string2Date(user.getExpiredTime()).compareTo(new Date()) < 0){
+                //过期了
+                return ResultGenerator.genFailResult("当前账号已过期，("+user.getExpiredTime().toString()+")");
+            }
+
+            user.setPassword(req.getPassword());
+            userService.save(user);
+            return ResultGenerator.genSuccessResult("重置密码成功");
         } catch (Exception e) {
             e.printStackTrace();
             return ResultGenerator.genFailResult(e.toString());

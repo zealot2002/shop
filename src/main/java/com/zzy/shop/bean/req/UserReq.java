@@ -24,7 +24,7 @@ public class UserReq{
 	@ApiModelProperty(value="设备号(add|update)")
 	private String deviceId;
 
-	private Date expiredTime;
+	private String expiredTime;
 
 /******************************************************************************/
     public Long getId() {
@@ -66,11 +66,11 @@ public class UserReq{
 		this.deviceId = deviceId;
 	}
 
-	public Date getExpiredTime() {
+	public String getExpiredTime() {
 		return expiredTime;
 	}
 
-	public void setExpiredTime(Date expiredTime) {
+	public void setExpiredTime(String expiredTime) {
 		this.expiredTime = expiredTime;
 	}
 }

@@ -28,8 +28,7 @@ public class User implements Serializable{
     private Date createdTime;
 
     @Column(name = "expired_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date expiredTime;
+    private String expiredTime;
 
     private String phone;
     private String avatar;
@@ -97,11 +96,11 @@ public class User implements Serializable{
 		this.inUsed = inUsed;
 	}
 
-    public Date getExpiredTime() {
+    public String getExpiredTime() {
         return expiredTime;
     }
 
-    public void setExpiredTime(Date expiredTime) {
+    public void setExpiredTime(String expiredTime) {
         this.expiredTime = expiredTime;
     }
 
